@@ -1,183 +1,271 @@
-# Universal Obsidian Skills for AI Coding Agents
+# Universal Obsidian Suite: Skills & Plugins for AI Agents
 
-A complete, production-ready Agent Skills suite for [Obsidian](https://obsidian.md). This repository unifies deep command-line automation (130+ CLI commands) with full-spectrum support for Obsidian formats (Obsidian Flavored Markdown, Bases databases, JSON Canvas, web extraction with Defuddle, and batch templating with Knap).
-
-Compatible with all agents adhering to the [Agent Skills specification](https://agentskills.io/specification), including **Claude Code**, **Cursor**, **Codex**, **OpenCode**, **Cortex Code**, **GitHub Copilot**, and **Windsurf**.
-
----
-
-## Included Skills
-
-| Skill | Path | Description |
-| :--- | :--- | :--- |
-| **[obsidian-cli](skills/obsidian-cli)** | `skills/obsidian-cli` | Full control of Obsidian vaults via official CLI (v1.12+): 130+ commands, note CRUD, daily notes, search, properties, tasks, tags, sync history, and plugin/theme development. |
-| **[obsidian-markdown](skills/obsidian-markdown)** | `skills/obsidian-markdown` | Create and format [Obsidian Flavored Markdown](https://help.obsidian.md/obsidian-flavored-markdown) (`.md`) with wikilinks, embeds, callouts, and frontmatter properties. |
-| **[obsidian-bases](skills/obsidian-bases)** | `skills/obsidian-bases` | Design and query [Obsidian Bases](https://help.obsidian.md/bases/syntax) (`.base`) with database views (tables, cards, lists), filters, formulas, and summaries. |
-| **[json-canvas](skills/json-canvas)** | `skills/json-canvas` | Create and manipulate [JSON Canvas](https://jsoncanvas.org/) visual graphs (`.canvas`) with nodes, edges, groups, and connections. |
-| **[defuddle](skills/defuddle)** | `skills/defuddle` | Extract clean, decluttered Markdown from web pages with [Defuddle](https://github.com/kepano/defuddle) to conserve agent token context. |
-| **[knap](skills/knap)** | `skills/knap` | Render Markdown templates from JSON/CSV data and batch-generate notes using [Knap](https://github.com/obsidianmd/knap). |
+A complete, production-grade intelligence and automation suite for [Obsidian](https://obsidian.md). This repository provides two complementary integration architectures:
+1. **Agent Skills**: Modular, discoverable instruction modules following the [Agent Skills specification](https://agentskills.io/specification).
+2. **AI Plugins**: Packaged marketplace plugins and custom instruction packages for all major AI coding agents, IDEs, and assistants.
 
 ---
 
-## Prerequisites for Obsidian CLI
+## 🌟 Feature & Capability Matrix
 
-| Requirement | Details |
-| :--- | :--- |
-| **Obsidian Desktop** | **v1.12.0+** (free for all users) |
-| **CLI Enabled** | Open Obsidian &rarr; Settings &rarr; Command line interface &rarr; Toggle **ON** |
-| **Obsidian Running** | The desktop application must be open (communicates over local IPC) |
-
-### OS Configuration
-
-- **macOS / Linux**: The `obsidian` executable is added to PATH automatically upon enabling the toggle in Settings.
-- **Windows**: Requires the `Obsidian.com` redirector file placed alongside `Obsidian.exe`. Run commands in standard user terminals (admin privileges disable IPC).
-- **Headless Linux**: Install via official `.deb` package. Run with `xvfb` (`DISPLAY=:5`) and set `PrivateTmp=false` in systemd units.
+| Capability | Skill Path | Supported Formats / Tools | What It Enables |
+| :--- | :--- | :--- | :--- |
+| **CLI Automation** | [`skills/obsidian-cli`](skills/obsidian-cli) | Official Obsidian CLI (v1.12+) | Full terminal control: 130+ commands for note CRUD, daily notes, search, tasks, tags, properties, bookmarks, templates, sync, and plugin/theme hot-reloading. |
+| **Obsidian Markdown** | [`skills/obsidian-markdown`](skills/obsidian-markdown) | `.md` (OFM) | Authoring with native wikilinks (`[[Note]]`), block embeds (`![[Note#^id]]`), callouts (`> [!NOTE]`), and frontmatter properties. |
+| **Obsidian Bases** | [`skills/obsidian-bases`](skills/obsidian-bases) | `.base` | Creating and managing database schemas, formulas, table/card/list views, filters, and aggregations. |
+| **JSON Canvas** | [`skills/json-canvas`](skills/json-canvas) | `.canvas` | Creating visual graphs, cards, file nodes, edges, labels, and group boundaries according to JSON Canvas spec. |
+| **Web Content Parsing** | [`skills/defuddle`](skills/defuddle) | `defuddle` CLI | Extracting clean, ad-free Markdown from web pages to minimize agent context window and token usage. |
+| **Template Batching** | [`skills/knap`](skills/knap) | `knap` CLI | Rendering liquid-style Markdown templates from JSON/CSV files and batch-generating structured notes. |
 
 ---
 
-## Installation Across AI Agent Platforms
+## 🚀 Setup Guides: Skills vs Plugins Across AI Systems
 
-### Claude Code
+### 1. Anthropic Claude Ecosystem
 
-**Option 1 — Marketplace Install (Recommended)**
-```bash
-/plugin marketplace add <repo-url>
-/plugin install obsidian@obsidian-universal-skills
-```
+#### Claude Code (CLI)
 
-**Option 2 — Direct Plugin Directory**
-```bash
-claude --plugin-dir ./obsidian-universal-skills
-```
+* **As a Plugin (Marketplace)**:
+  ```bash
+  /plugin marketplace add https://github.com/kepano/obsidian-skills
+  /plugin install obsidian@obsidian-universal-skills
+  ```
+  *To install only the standalone CLI plugin:*
+  ```bash
+  /plugin install obsidian-cli@obsidian-universal-skills
+  ```
 
-**Option 3 — Vault Local Copy**
-Copy the `skills/` directory into the `.claude/skills/` folder inside your Obsidian vault or project root.
+* **As a Local Plugin**:
+  ```bash
+  claude --plugin-dir ./obsidian-universal-skills
+  ```
+
+* **Persistent via `.claude/settings.json`**:
+  ```json
+  {
+    "plugins": {
+      "obsidian": {
+        "source": { "source": "github", "repo": "kepano/obsidian-skills" }
+      }
+    }
+  }
+  ```
+
+* **As Modular Skills**:
+  Copy the [`skills/`](skills/) folder directly into `.claude/skills/` in your vault or workspace root:
+  ```bash
+  mkdir -p .claude/skills
+  cp -r skills/* .claude/skills/
+  ```
+
+#### Claude Desktop & Web
+- Paste the instructions from [`skills/obsidian-cli/SKILL.md`](skills/obsidian-cli/SKILL.md) and [`skills/obsidian-markdown/SKILL.md`](skills/obsidian-markdown/SKILL.md) into your **Project Knowledge** or **Custom Instructions**.
 
 ---
 
-### npx skills
-```bash
-npx skills add <repo-url>
-```
+### 2. OpenAI & ChatGPT Ecosystem
+
+#### ChatGPT (Custom GPTs & Custom Instructions)
+1. Open ChatGPT &rarr; **Explore GPTs** &rarr; **Create a GPT** (or go to **Settings &rarr; Custom Instructions**).
+2. Copy the prepared instructions from [`integrations/openai/chatgpt_custom_instructions.md`](integrations/openai/chatgpt_custom_instructions.md) into the **Instructions** field.
+
+#### OpenAI API & Function Calling Agents
+- Use the complete tool definitions schema in [`integrations/openai/function_tools.json`](integrations/openai/function_tools.json) to enable direct structured function calling against the Obsidian CLI.
 
 ---
 
-### Cursor
-Cursor natively discovers skills placed in `~/.cursor/skills`:
+### 3. Cursor IDE
+
+#### As Native Skills (Recommended)
+Cursor auto-discovers skills placed in `~/.cursor/skills`:
 ```bash
 mkdir -p ~/.cursor/skills
 cp -r skills/* ~/.cursor/skills/
 ```
 
+#### As Cursor Rules (`.cursorrules`)
+Copy the rule template from [`integrations/cursor/rules.md`](integrations/cursor/rules.md) into `.cursorrules` or `.cursor/rules/obsidian.mdc` at the root of your vault.
+
 ---
 
-### Codex
-Copy the `skills/` directory into your Codex skills path:
+### 4. Google Antigravity & Gemini IDE
+
+#### As a Plugin
+Copy the repository into your global or workspace customizations root:
+```bash
+# Workspace plugin installation
+mkdir -p .agents/plugins/obsidian
+cp -r ./* .agents/plugins/obsidian/
+```
+
+#### As Skills
+Copy the skills directory to the workspace skills directory:
+```bash
+mkdir -p .agents/skills
+cp -r skills/* .agents/skills/
+```
+
+---
+
+### 5. Codex & OpenCode
+
+#### Codex
 ```bash
 mkdir -p ~/.codex/skills
 cp -r skills/* ~/.codex/skills/
 ```
 
+#### OpenCode
+Clone the full repository into the OpenCode skills path:
+```bash
+git clone https://github.com/kepano/obsidian-skills.git ~/.opencode/skills/obsidian-skills
+```
+OpenCode automatically discovers all `SKILL.md` files upon restart.
+
 ---
 
-### OpenCode
-Clone the repository into the OpenCode skills path:
+### 6. Snowflake Cortex Code
 ```bash
-git clone <repo-url> ~/.opencode/skills/obsidian-universal-skills
-```
-OpenCode automatically discovers all `SKILL.md` files recursively upon restart.
+# Remote install
+/skill add https://github.com/kepano/obsidian-skills.git
 
----
-
-### Cortex Code
-```bash
-/skill add <repo-url>
-```
-Or copy directly into user-level skills:
-```bash
+# Or user-level install
 mkdir -p ~/.snowflake/cortex/skills
 cp -r skills/* ~/.snowflake/cortex/skills/
 ```
 
 ---
 
-### GitHub Copilot (VS Code)
-Add repository instructions to `.github/copilot-instructions.md` or scoped to `.github/instructions/obsidian.instructions.md`.
+### 7. GitHub Copilot (VS Code)
+Copy [`integrations/copilot/copilot-instructions.md`](integrations/copilot/copilot-instructions.md) to `.github/copilot-instructions.md` in your vault repository.
 
 ---
 
-### Windsurf
-Copy skills into `.windsurf/rules/` and reference commands as needed.
+### 8. Windsurf / Codeium Cascade
+Copy [`integrations/windsurf/obsidian_rules.md`](integrations/windsurf/obsidian_rules.md) to `.windsurf/rules/obsidian.md`.
 
 ---
 
-## Quick Start Examples
-
-### 1. Obsidian CLI Note Operations
+### 9. Nanoclaw & Openclaw
 ```bash
-# Append to today's daily note
-obsidian daily:append content="- [ ] Review pull requests"
+# Nanoclaw
+mkdir -p .claude/skills/obsidian-cli
+cp -r skills/obsidian-cli/* .claude/skills/obsidian-cli/
 
-# Search vault and format output as JSON
-obsidian search query="meeting notes" format=json | jq '.[].path'
+# Openclaw
+mkdir -p skills
+cp -r skills/* skills/
+```
+
+---
+
+### 10. Local LLMs & Other Coding Assistants (Ollama, Cline, Continue.dev, Aider)
+- For **Cline / Continue.dev**: Add [`skills/obsidian-cli/SKILL.md`](skills/obsidian-cli/SKILL.md) and [`skills/obsidian-markdown/SKILL.md`](skills/obsidian-markdown/SKILL.md) to your custom prompt or system rules file.
+- For **Aider**: Run `aider --read skills/obsidian-cli/SKILL.md`.
+
+---
+
+## 🛠️ Obsidian CLI Prerequisites & Platform Setup
+
+The CLI communicates with the desktop application over local Inter-Process Communication (IPC).
+
+| Prerequisite | Setting / Requirement |
+| :--- | :--- |
+| **Obsidian Version** | **v1.12.0+** (Desktop) |
+| **Enable CLI** | In Obsidian: **Settings &rarr; Command line interface &rarr; Toggle ON** |
+| **Application State** | Obsidian desktop **must be running** during CLI execution |
+
+### Platform-Specific Notes
+
+* **macOS / Linux**: The binary is automatically added to your shell `PATH`.
+* **Windows**:
+  - The CLI requires `Obsidian.com` located next to `Obsidian.exe`.
+  - Always run in **standard user terminals** (elevated Administrator terminals block IPC).
+  - If using **Git Bash / MSYS2**, configure a wrapper script at `~/bin/obsidian`:
+    ```bash
+    #!/bin/bash
+    /c/path/to/Obsidian.com "$@"
+    ```
+* **Headless Linux / CI**:
+  - Use the official `.deb` package.
+  - Execute under `xvfb`: `xvfb-run obsidian <command>` or prefix `DISPLAY=:5`.
+  - Ensure systemd unit services have `PrivateTmp=false`.
+
+---
+
+## 📖 Practical Workflows & Examples
+
+### 1. Note CRUD and Daily Notes
+```bash
+# Append a task to today's daily note
+obsidian daily:append content="- [ ] Ship feature update"
+
+# Read note contents
+obsidian read path="projects/roadmap.md"
+
+# Create a note with initial content or from template
+obsidian create path="meetings/2026-10-02" template="meeting-template" silent
+```
+
+### 2. Search & Vault Analysis
+```bash
+# Full text search returning JSON
+obsidian search query="Architecture" format=json | jq '.[].path'
 
 # Query incomplete tasks across the entire vault
 obsidian tasks | grep "\[ \]"
 
-# Create a new note from a template
-obsidian create path="projects/q4-plan" template="project-template"
-obsidian property:set path="projects/q4-plan.md" name="status" value="active"
+# Graph analysis: find orphaned notes with no links
+obsidian orphans
+
+# Find broken internal links
+obsidian unresolved
 ```
 
-### 2. Plugin & Theme Development Workflow
+### 3. Plugin & Theme Developer Lifecycle
 ```bash
-# Reload plugin after code edits
-obsidian plugin:reload id="my-custom-plugin"
+# 1. Hot reload plugin after code edits
+obsidian plugin:reload id="my-plugin-id"
 
-# Check for runtime errors
+# 2. Check for runtime errors
 obsidian dev:errors
 
-# Capture visual state or inspect elements
-obsidian dev:screenshot path="screenshots/debug.png"
+# 3. Inspect DOM elements or CSS properties
 obsidian dev:dom selector=".workspace-leaf" text
+obsidian dev:css selector=".workspace-leaf" prop=background-color
+
+# 4. Capture screenshot
+obsidian dev:screenshot path="tests/debug.png"
 ```
 
-### 3. Defuddle & Knap Note Extraction Pipeline
+### 4. Web Extraction & Batch Templating
 ```bash
-# Extract web page content and batch render into a structured note
+# Extract clean article markdown and batch-render into notes
 defuddle parse https://example.com/article --md --json \
   | knap render template.md --data - -o notes/article.md
 ```
 
 ---
 
-## Evaluation & Testing
+## 🧪 Evaluation & Benchmark Suite
 
-The repository includes a benchmark evaluation suite located in [`eval/`](eval/):
-- **[`eval/eval_set.json`](eval/eval_set.json)**: Contains curated prompt cases testing positive triggers vs negative non-triggers.
-- **[`eval/eval_review.html`](eval/eval_review.html)**: Interactive visual inspection interface for skill evaluations.
-
----
-
-## Troubleshooting Reference
-
-| Issue | Root Cause | Solution |
-| :--- | :--- | :--- |
-| Command hangs / empty output | Obsidian is not open or running in Windows Admin mode | Launch Obsidian desktop; run terminal in standard user mode |
-| `command not found: obsidian` | CLI binary not in PATH | Toggle CLI setting OFF/ON in Obsidian Settings; restart shell |
-| Exit code 127 on colon commands | Outdated Windows installer or Git Bash executable collision | Reinstall from [obsidian.md/download](https://obsidian.md/download); configure Git Bash wrapper |
-| Linux IPC socket connection failed | Systemd sandboxing (`PrivateTmp=true`) or Snap confinement | Set `PrivateTmp=false`; install official `.deb` package |
-| `template:insert` errors | Requires an active GUI tab | Use `obsidian create path="..." template="..."` for headless execution |
-| List properties saved as strings | CLI writes raw strings to metadata | Edit note frontmatter directly or invoke `obsidian eval` |
+An automated prompt classification dataset and interactive review UI are provided in [`eval/`](eval/):
+- **[`eval/eval_set.json`](eval/eval_set.json)**: 30+ categorized test prompts for evaluating agent trigger precision.
+- **[`eval/eval_review.html`](eval/eval_review.html)**: Interactive browser UI for visualizing evaluation benchmarks.
 
 ---
 
-## Full Command Reference
+## 📚 Detailed References
 
-For detailed parameter schemas, output flags, and examples across all 130+ commands, see [`skills/obsidian-cli/references/command-reference.md`](skills/obsidian-cli/references/command-reference.md).
+- [CLI 130+ Command Reference](skills/obsidian-cli/references/command-reference.md)
+- [Obsidian Callouts Reference](skills/obsidian-markdown/references/CALLOUTS.md)
+- [Obsidian Embeds Reference](skills/obsidian-markdown/references/EMBEDS.md)
+- [Obsidian Properties Reference](skills/obsidian-markdown/references/PROPERTIES.md)
+- [Obsidian Bases Formula Reference](skills/obsidian-bases/references/FUNCTIONS_REFERENCE.md)
+- [JSON Canvas Examples](skills/json-canvas/references/EXAMPLES.md)
 
 ---
 
-## License
+## 📄 License
 
-MIT License. See [LICENSE](LICENSE) for details.
+MIT License. See [LICENSE](LICENSE) for full details.

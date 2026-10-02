@@ -1,0 +1,32 @@
+[
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_cli",
+      "description": "Execute an Obsidian CLI command to read, create, search, or modify notes and vault data.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string",
+            "description": "The primary Obsidian CLI command (e.g., read, create, append, daily:append, search, tasks, property:set, plugin:reload)"
+          },
+          "args": {
+            "type": "object",
+            "description": "Key-value parameters for the command (e.g. { \"path\": \"notes/meeting.md\", \"content\": \"text\", \"query\": \"search term\" })"
+          },
+          "flags": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Boolean flags (e.g. ['silent', 'overwrite', 'counts'])"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Optional vault name if targeting a specific vault"
+          }
+        },
+        "required": ["command"]
+      }
+    }
+  }
+]
