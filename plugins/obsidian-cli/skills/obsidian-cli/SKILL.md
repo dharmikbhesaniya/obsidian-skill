@@ -128,9 +128,10 @@ Commands target the most recently active/focused vault by default. To target a s
 obsidian read path="folder/note.md"
 obsidian read file="Meeting Note"
 
-# Create a note
-obsidian create path="folder/new-note" content="# Title\n\nInitial text."
-obsidian create path="projects/feature" template="project-template" silent
+# Create a note — ALWAYS add 'silent' flag during agent operations
+# Without 'silent', create opens the file in Obsidian's UI
+obsidian create path="folder/new-note" content="# Title\n\nInitial text." silent
+obsidian create path="projects/feature" template="project-template" silent overwrite
 
 # Append and prepend content
 obsidian append path="folder/note.md" content="New trailing content"
@@ -154,27 +155,36 @@ obsidian daily:prepend content="## Morning Briefing"
 
 ```bash
 obsidian search query="meeting" limit=10
-obsidian search query="refactor" format=json | jq '.[]'
+obsidian search query="refactor" format=json matches     # Preferred: structured JSON with line numbers
 obsidian search:context query="TODO"
 ```
+
+> **Gotcha**: Plain `search query="..."` returns unstructured text. Always use `format=json matches` for programmatic consumption — it returns `[{"file":"path","matches":[{"line":N,"text":"..."}]}]`.
 
 ### Properties and Tags
 
 ```bash
-obsidian properties path="note.md"
+obsidian properties path="note.md" format=tsv            # Use format=tsv for stable parsing
 obsidian property:set path="note.md" name="status" value="in-progress"
 obsidian property:read path="note.md" name="status"
 obsidian property:remove path="note.md" name="draft"
-obsidian tags counts sort=count
+obsidian tags all counts sort=count                      # MUST use 'all' for vault-wide tags
 ```
+
+> **Gotcha — properties**: `format=json` on `properties` returns YAML-like output, not valid JSON. Use `format=tsv` for stable key-value parsing.
+>
+> **Gotcha — tags**: `tags counts` without `all` returns tags for the active file only (often empty). Always use `tags all counts` for vault-wide results.
 
 ### Tasks
 
 ```bash
-obsidian tasks                          # All tasks (todo + done)
+obsidian tasks all                      # All vault-wide tasks (todo + done)
+obsidian tasks all todo                 # Vault-wide incomplete tasks only
 obsidian tasks daily todo               # Incomplete tasks in today's daily note
 obsidian task path="note.md" line=12 toggle
 ```
+
+> **Gotcha — tasks scope**: `tasks` or `tasks todo` without `all` defaults to the active file scope (often nothing is active via CLI), returning **0 results silently**. Always use `tasks all` for vault-wide queries.
 
 ---
 
@@ -291,3 +301,12 @@ obsidian file path="scratch/temp.md"         # 4. Confirm removal
 | Socket error / IPC failure on Linux | Systemd service isolation (`PrivateTmp=true`) or Snap | Set `PrivateTmp=false` in systemd unit; install official `.deb` package |
 | Headless Linux display error | No X server running | Run under `xvfb-run` or export `DISPLAY=:5` |
 | `Command "[Vault Name]" not found` | Shell argument parsing variation | Use `vault="[Vault Name]"` flag or switch to the vault in GUI |
+| Error message but `$?` = 0 | CLI returns exit code 0 even on some failures | **Never rely solely on exit codes.** Always parse stdout for `Error:` prefixes to detect actual failures |
+| Tags/tasks return empty | Scope defaults to active file (nothing active in CLI mode) | Always use `tags all` and `tasks all` for vault-wide operations |
+
+### Fallback Strategy
+
+If the Obsidian CLI is unavailable (app not running, CLI not installed, or version too old), fall back to direct file system tools (Read, Write, Edit, Grep, Glob) for basic operations. The CLI is required only when Obsidian's index or app features add value (search, backlinks, tags, tasks, properties, bases). Plain text manipulation can always use file tools directly.
+
+Run `obsidian vault` to confirm CLI connectivity — it returns the vault name, path, and file count when working correctly.
+
