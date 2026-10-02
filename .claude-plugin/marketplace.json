@@ -1,5 +1,4 @@
 {
-  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "obsidian-skill",
   "description": "Universal Obsidian skills suite for AI coding agents — complete CLI control, markdown formatting, bases databases, JSON canvas, web extraction, and template workflows",
   "owner": {

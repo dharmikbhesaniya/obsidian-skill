@@ -231,6 +231,40 @@ Running `obsidian` with no arguments opens an interactive terminal interface:
 
 ---
 
+## Safety Policy for Vault Operations
+
+Follow the **Read &rarr; Verify &rarr; Execute &rarr; Confirm** pattern for all operations that modify vault state.
+
+### Non-Destructive Operations (Read, Search, List)
+Execute directly. No confirmation needed.
+
+### Additive Operations (Create, Append, Prepend)
+1. **Verify target**: Confirm the file path or daily note exists (or should be created).
+2. **Execute**: Run the command.
+3. **Confirm**: Read the file back or check for errors.
+
+### Destructive Operations (Delete, Move, Rename, Overwrite)
+1. **Identify**: Search for the exact file to verify it exists and confirm the path.
+2. **Inspect**: Check incoming backlinks (`obsidian backlinks`) to understand impact.
+3. **Confirm intent**: Only use `permanent` deletion when the user explicitly requests it. Default to trash.
+4. **Execute**: Run the command.
+5. **Verify**: Confirm the operation completed (e.g., file no longer at original path, file exists at new path).
+
+```bash
+# Example: Safe delete workflow
+obsidian file path="scratch/temp.md"         # 1. Verify file exists
+obsidian backlinks file="scratch/temp.md"    # 2. Check incoming links
+obsidian delete path="scratch/temp.md"       # 3. Execute (trash, not permanent)
+obsidian file path="scratch/temp.md"         # 4. Confirm removal
+```
+
+### Property Modification
+1. **Read current value**: `obsidian property:read path="note.md" name="status"`
+2. **Set new value**: `obsidian property:set path="note.md" name="status" value="done"`
+3. **Verify**: `obsidian property:read path="note.md" name="status"`
+
+---
+
 ## Important Rules and Tips
 
 1. **Vault-Relative Paths**: Always specify paths relative to vault root (`folder/note.md`), never absolute OS paths.

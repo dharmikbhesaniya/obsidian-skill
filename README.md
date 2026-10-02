@@ -146,22 +146,17 @@ Copy [`integrations/windsurf/obsidian_rules.md`](integrations/windsurf/obsidian_
 
 ---
 
-### 9. Nanoclaw & Openclaw
-```bash
-# Nanoclaw
-mkdir -p .claude/skills/obsidian-cli
-cp -r skills/obsidian-cli/* .claude/skills/obsidian-cli/
+### Community Integrations
 
-# Openclaw
-mkdir -p skills
-cp -r skills/* skills/
-```
+The following agents are compatible through their standard skill/instruction systems. These are documented for convenience but have not been individually validated by this repository's maintainers.
 
----
-
-### 10. Local LLMs & Other Coding Assistants (Ollama, Cline, Continue.dev, Aider)
-- For **Cline / Continue.dev**: Add [`skills/obsidian-cli/SKILL.md`](skills/obsidian-cli/SKILL.md) and [`skills/obsidian-markdown/SKILL.md`](skills/obsidian-markdown/SKILL.md) to your custom prompt or system rules file.
-- For **Aider**: Run `aider --read skills/obsidian-cli/SKILL.md`.
+| Agent | Method |
+| :--- | :--- |
+| **Nanoclaw** | Copy `skills/` into `.claude/skills/` |
+| **Openclaw** | Copy `skills/` into project `skills/` directory |
+| **Cline / Continue.dev** | Add `SKILL.md` contents to custom prompt or system rules |
+| **Aider** | Run `aider --read skills/obsidian-cli/SKILL.md` |
+| **Local LLMs (Ollama, LM Studio)** | Paste `SKILL.md` contents into system prompt |
 
 ---
 

@@ -2,23 +2,284 @@
   {
     "type": "function",
     "function": {
+      "name": "obsidian_read_note",
+      "description": "Read the raw markdown content of a note from the Obsidian vault.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Vault-relative path to the note (e.g. 'projects/roadmap.md')"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Optional vault name if targeting a specific vault"
+          }
+        },
+        "required": ["path"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_create_note",
+      "description": "Create a new note in the Obsidian vault. Path should omit .md extension.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Vault-relative path for the new note without .md (e.g. 'projects/new-feature')"
+          },
+          "content": {
+            "type": "string",
+            "description": "Initial markdown content for the note"
+          },
+          "template": {
+            "type": "string",
+            "description": "Name of a template to create the note from (alternative to content)"
+          },
+          "silent": {
+            "type": "boolean",
+            "description": "If true, do not open the note in the Obsidian UI"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Optional vault name"
+          }
+        },
+        "required": ["path"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_append_note",
+      "description": "Append content to the end of an existing note.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Vault-relative path to the note (e.g. 'projects/log.md')"
+          },
+          "content": {
+            "type": "string",
+            "description": "Content to append to the note"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Optional vault name"
+          }
+        },
+        "required": ["path", "content"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_search",
+      "description": "Full-text search across the Obsidian vault. Returns matching file paths.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search term or phrase"
+          },
+          "path": {
+            "type": "string",
+            "description": "Optional folder scope to restrict search"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of results to return"
+          },
+          "format": {
+            "type": "string",
+            "enum": ["text", "json"],
+            "description": "Output format (default: text)"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Optional vault name"
+          }
+        },
+        "required": ["query"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_daily_note",
+      "description": "Read or append content to today's daily note.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": ["read", "append", "prepend", "open", "path"],
+            "description": "Operation to perform on the daily note"
+          },
+          "content": {
+            "type": "string",
+            "description": "Content to append or prepend (required for append/prepend actions)"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Optional vault name"
+          }
+        },
+        "required": ["action"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_tasks",
+      "description": "Query tasks across the vault. Filter by status (all, todo, done) or scope (daily).",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "filter": {
+            "type": "string",
+            "enum": ["all", "todo", "done", "daily"],
+            "description": "Task filter (default: all)"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Optional vault name"
+          }
+        }
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_property",
+      "description": "Read, set, or remove a frontmatter property on a note.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": ["read", "set", "remove", "list"],
+            "description": "Operation to perform"
+          },
+          "path": {
+            "type": "string",
+            "description": "Vault-relative path to the note"
+          },
+          "name": {
+            "type": "string",
+            "description": "Property name (required for read, set, remove)"
+          },
+          "value": {
+            "type": "string",
+            "description": "Property value (required for set)"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Optional vault name"
+          }
+        },
+        "required": ["action", "path"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_move_note",
+      "description": "Move or rename a note within the vault. Destructive — verify before executing.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Current vault-relative path including .md extension"
+          },
+          "to": {
+            "type": "string",
+            "description": "Destination vault-relative path including .md extension"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Optional vault name"
+          }
+        },
+        "required": ["path", "to"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_delete_note",
+      "description": "Delete a note from the vault. Destructive — always verify the file exists and check backlinks before deleting. Defaults to trash unless 'permanent' is true.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Vault-relative path to the note including .md extension"
+          },
+          "permanent": {
+            "type": "boolean",
+            "description": "If true, permanently delete instead of moving to trash. Only use when the user explicitly requests permanent deletion."
+          },
+          "vault": {
+            "type": "string",
+            "description": "Optional vault name"
+          }
+        },
+        "required": ["path"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_vault_analytics",
+      "description": "Run vault-wide analysis: list files, orphaned notes, unresolved links, tags, or backlinks.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "analysis": {
+            "type": "string",
+            "enum": ["files", "orphans", "unresolved", "deadends", "tags", "backlinks"],
+            "description": "Type of analysis to perform"
+          },
+          "file": {
+            "type": "string",
+            "description": "Target file for backlinks analysis"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Optional vault name"
+          }
+        },
+        "required": ["analysis"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
       "name": "obsidian_cli",
-      "description": "Execute an Obsidian CLI command to read, create, search, or modify notes and vault data.",
+      "description": "Execute any raw Obsidian CLI command. Use this as an escape hatch for advanced operations not covered by the high-level tools above (e.g. plugin management, sync, eval, dev tools, base queries).",
       "parameters": {
         "type": "object",
         "properties": {
           "command": {
             "type": "string",
-            "description": "The primary Obsidian CLI command (e.g., read, create, append, daily:append, search, tasks, property:set, plugin:reload)"
-          },
-          "args": {
-            "type": "object",
-            "description": "Key-value parameters for the command (e.g. { \"path\": \"notes/meeting.md\", \"content\": \"text\", \"query\": \"search term\" })"
-          },
-          "flags": {
-            "type": "array",
-            "items": { "type": "string" },
-            "description": "Boolean flags (e.g. ['silent', 'overwrite', 'counts'])"
+            "description": "The full Obsidian CLI command string (e.g. 'plugin:reload id=\"my-plugin\"', 'eval code=\"app.vault.getFiles().length\"', 'base:query path=\"tasks.base\"')"
           },
           "vault": {
             "type": "string",
