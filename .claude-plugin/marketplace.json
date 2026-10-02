@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "obsidian-universal-skills",
-  "description": "Universal Obsidian skills suite for AI coding agents — complete CLI control, markdown formatting, bases databases, JSON canvas, and template workflows",
+  "description": "Universal Obsidian skills suite for AI coding agents — complete CLI control, markdown formatting, bases databases, JSON canvas, web extraction, and template workflows",
   "owner": {
     "name": "Obsidian Skills Contributors"
   },
@@ -12,7 +12,16 @@
       "author": {
         "name": "Obsidian Skills Contributors"
       },
-      "source": "./",
+      "source": "./plugins/obsidian",
+      "category": "productivity"
+    },
+    {
+      "name": "obsidian-cli",
+      "description": "Interact with Obsidian vaults using the official Obsidian CLI (v1.12+). Read, create, append, search, and manage notes, daily notes, properties, tags, tasks, bookmarks, templates, themes, sync, plugins, and links — all from the terminal.",
+      "author": {
+        "name": "Obsidian Skills Contributors"
+      },
+      "source": "./plugins/obsidian-cli",
       "category": "productivity"
     }
   ]
