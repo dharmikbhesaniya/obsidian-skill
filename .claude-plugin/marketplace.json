@@ -1,0 +1,19 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "obsidian-universal-skills",
+  "description": "Universal Obsidian skills suite for AI coding agents — complete CLI control, markdown formatting, bases databases, JSON canvas, and template workflows",
+  "owner": {
+    "name": "Obsidian Skills Contributors"
+  },
+  "plugins": [
+    {
+      "name": "obsidian",
+      "description": "Comprehensive skill suite for Obsidian: full CLI control, OFM formatting, Bases, JSON Canvas, Defuddle, and Knap.",
+      "author": {
+        "name": "Obsidian Skills Contributors"
+      },
+      "source": "./",
+      "category": "productivity"
+    }
+  ]
+}

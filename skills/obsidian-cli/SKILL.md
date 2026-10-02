@@ -1,0 +1,259 @@
+---
+name: obsidian-cli
+version: "1.3.0"
+description: >
+  Use this skill whenever the user wants to interact with their Obsidian vault from the
+  command line or have an AI agent perform operations on notes, daily notes, properties,
+  tags, tasks, links, bookmarks, templates, sync history, Bases, or file recovery. Also
+  supports Obsidian plugin and theme development with commands to reload plugins, run
+  JavaScript in app context, capture errors, take screenshots, inspect DOM and CSS, and
+  toggle mobile emulation. Treat requests implying "go into my vault and do X" as an
+  action trigger. Skip for pure conceptual questions about GUI navigation or settings.
+triggers:
+  - "obsidian"
+  - "vault"
+  - "daily note"
+  - "obsidian cli"
+  - "note"
+  - "append to"
+  - "prepend to"
+  - "search my vault"
+  - "create a note"
+  - "read note"
+  - "move note"
+  - "rename note"
+  - "delete note"
+  - "tasks in obsidian"
+  - "open tasks"
+  - "backlinks"
+  - "orphaned notes"
+  - "broken links"
+  - "frontmatter"
+  - "properties"
+  - "sync history"
+  - "obsidian bases"
+  - "file history"
+  - "reload plugin"
+  - "dev:screenshot"
+  - "obsidian eval"
+---
+
+# Obsidian CLI
+
+The official Obsidian CLI (v1.12+) enables comprehensive control of an Obsidian desktop instance from the command line over IPC. Requires Obsidian desktop to be running.
+
+> For exhaustive documentation on all 130+ commands, parameter tables, and output formats, refer to [`references/command-reference.md`](references/command-reference.md).
+
+---
+
+## Prerequisites
+
+| Requirement | Details |
+|---|---|
+| **Obsidian Desktop** | **v1.12.0+** |
+| **CLI enabled** | Settings &rarr; Command line interface &rarr; Toggle **ON** |
+| **Obsidian running** | The desktop application **must be running** (communicates over IPC) |
+
+### Platform-Specific Notes
+
+- **macOS / Linux**: The `obsidian` binary is registered in your `PATH` automatically upon enabling CLI in Settings.
+- **Windows**: Requires the `Obsidian.com` redirector file placed alongside `Obsidian.exe`. **Must run with normal user privileges** (admin terminals cause silent failures).
+  - If colon subcommands (`property:set`, `daily:append`, etc.) return exit `127`, verify `Obsidian.com` exists. If missing, reinstall the latest version from [obsidian.md/download](https://obsidian.md/download).
+  - **Git Bash / MSYS2**: If Bash resolves `obsidian` to `Obsidian.exe` instead of `Obsidian.com`, create a wrapper script at `~/bin/obsidian`:
+    ```bash
+    #!/bin/bash
+    /c/path/to/Obsidian.com "$@"
+    ```
+- **Headless Linux**: Use the `.deb` package (not snap). Run under `xvfb` and prefix commands with `DISPLAY=:5`. Ensure `PrivateTmp=false` in systemd services.
+
+---
+
+## Syntax and Conventions
+
+All parameters use **`key=value`** syntax. Quote values containing spaces.
+
+```bash
+obsidian <command> [subcommand] [key=value ...] [flags]
+```
+
+### File Targeting
+
+Commands target files using one of two parameter styles (or the active file if omitted):
+- `file="<name>"`: Resolves like a wikilink (note name without path or `.md` extension).
+- `path="<path>"`: Exact vault-relative path (e.g., `projects/roadmap.md`).
+
+For multiline text content, use `\n` for newlines and `\t` for tabs.
+
+### Vault Targeting
+
+Commands target the most recently active/focused vault by default. To target a specific vault:
+- **Flag method**: `obsidian vault="My Vault" <command> ...`
+- **Positional method**: `obsidian "My Vault" <command> ...`
+
+---
+
+## Command Overview (130+ Commands)
+
+| Group | Key Commands | Purpose |
+|---|---|---|
+| **Files** | `read`, `create`, `append`, `prepend`, `move`, `rename`, `delete`, `files`, `folders`, `file`, `random` | Note CRUD and file discovery |
+| **Daily Notes** | `daily`, `daily:read`, `daily:append`, `daily:prepend`, `daily:path` | Daily note operations |
+| **Search** | `search`, `search:context` | Full-text search (`format=json`, matching line excerpts) |
+| **Properties** | `properties`, `property:read`, `property:set`, `property:remove`, `aliases` | Frontmatter metadata management |
+| **Tags** | `tags`, `tag` | Tag listing, occurrence counts, and filtering |
+| **Tasks** | `tasks`, `task` | Task queries, filtering (`todo`, `done`, `daily`), and toggling |
+| **Links** | `backlinks`, `links`, `unresolved`, `orphans`, `deadends` | Vault link and graph analysis |
+| **Bookmarks** | `bookmarks`, `bookmark` | List and add bookmarks |
+| **Templates** | `templates`, `template:read`, `template:insert` | Template management and insertion |
+| **Plugins** | `plugins`, `plugin`, `plugin:enable/disable/install/uninstall/reload`, `plugins:restrict` | Community plugin management |
+| **Sync** | `sync`, `sync:status`, `sync:history`, `sync:read`, `sync:restore`, `sync:deleted` | Obsidian Sync operations |
+| **Themes** | `themes`, `theme`, `theme:set`, `theme:install`, `theme:uninstall` | Theme management |
+| **Snippets** | `snippets`, `snippets:enabled`, `snippet:enable`, `snippet:disable` | CSS snippet management |
+| **Commands** | `commands`, `command`, `hotkeys`, `hotkey` | Execute Obsidian commands by ID; inspect hotkeys |
+| **Bases** | `bases`, `base:query`, `base:views`, `base:create` | Obsidian Bases querying and creation |
+| **History** | `history`, `history:list`, `history:read`, `history:restore` | Local File Recovery snapshot management |
+| **Workspace** | `workspace`, `tabs`, `tab:open` | Workspace layout and tab management |
+| **Diff** | `diff` | Compare local vs sync file versions |
+| **Developer** | `eval`, `dev:screenshot`, `dev:debug`, `dev:console`, `dev:errors`, `dev:css`, `dev:dom`, `dev:mobile`, `devtools` | Debugging, inspection, and test automation |
+| **Vault** | `vault`, `vaults`, `version`, `reload`, `restart`, `outline`, `wordcount`, `recents` | App status and control |
+
+---
+
+## Quick Reference — Common Operations
+
+### Reading and Writing Notes
+
+```bash
+# Read raw markdown
+obsidian read path="folder/note.md"
+obsidian read file="Meeting Note"
+
+# Create a note
+obsidian create path="folder/new-note" content="# Title\n\nInitial text."
+obsidian create path="projects/feature" template="project-template" silent
+
+# Append and prepend content
+obsidian append path="folder/note.md" content="New trailing content"
+obsidian prepend path="folder/note.md" content="Content inserted after frontmatter"
+
+# Move, rename, delete
+obsidian move path="inbox/idea.md" to="archive/2026/idea.md"
+obsidian delete path="scratch/temp.md" permanent
+```
+
+### Daily Notes
+
+```bash
+obsidian daily                          # Open today's note in UI
+obsidian daily:read                     # Print today's note to stdout
+obsidian daily:append content="- [ ] Follow up on PR #10"
+obsidian daily:prepend content="## Morning Briefing"
+```
+
+### Search
+
+```bash
+obsidian search query="meeting" limit=10
+obsidian search query="refactor" format=json | jq '.[]'
+obsidian search:context query="TODO"
+```
+
+### Properties and Tags
+
+```bash
+obsidian properties path="note.md"
+obsidian property:set path="note.md" name="status" value="in-progress"
+obsidian property:read path="note.md" name="status"
+obsidian property:remove path="note.md" name="draft"
+obsidian tags counts sort=count
+```
+
+### Tasks
+
+```bash
+obsidian tasks                          # All tasks (todo + done)
+obsidian tasks daily todo               # Incomplete tasks in today's daily note
+obsidian task path="note.md" line=12 toggle
+```
+
+---
+
+## Plugin and Theme Development Workflow
+
+Follow this cycle when developing Obsidian plugins and themes:
+
+1. **Reload changes**:
+   ```bash
+   obsidian plugin:reload id="my-plugin-id"
+   ```
+2. **Check for runtime errors**:
+   ```bash
+   obsidian dev:errors
+   ```
+3. **Inspect DOM and CSS**:
+   ```bash
+   obsidian dev:dom selector=".workspace-leaf" text
+   obsidian dev:css selector=".workspace-leaf" prop=background-color
+   ```
+4. **Capture visual screenshot**:
+   ```bash
+   obsidian dev:screenshot path="tests/screenshot.png"
+   ```
+5. **Inspect console output**:
+   ```bash
+   obsidian dev:debug on
+   obsidian dev:console level=error limit=20
+   ```
+6. **Execute JavaScript in app context**:
+   ```bash
+   obsidian eval code="app.vault.getMarkdownFiles().length"
+   ```
+7. **Toggle mobile emulation**:
+   ```bash
+   obsidian dev:mobile on
+   ```
+
+---
+
+## TUI Mode
+
+Running `obsidian` with no arguments opens an interactive terminal interface:
+
+| Key | Action |
+|---|---|
+| `↑` / `↓` | Navigate file list |
+| `Enter` | Open file in Obsidian |
+| `/` | Search vault |
+| `n` | Create new note |
+| `d` | Delete note |
+| `r` | Rename note |
+| `q` | Exit TUI |
+
+---
+
+## Important Rules and Tips
+
+1. **Vault-Relative Paths**: Always specify paths relative to vault root (`folder/note.md`), never absolute OS paths.
+2. **`create` vs `move` extension behavior**:
+   - `create path="folder/note"` omits `.md` (appended automatically).
+   - `move path="old.md" to="new.md"` requires the full destination path with `.md`.
+3. **`template:insert` constraint**: Only inserts into the currently open file in the GUI. To create a new file headlessly from a template, use `obsidian create path="path/name" template="template-name"`.
+4. **`property:set` lists**: `value="a, b"` stores a string. To store native YAML array lists, modify the note's frontmatter directly or use `obsidian eval`.
+5. **Multiline `eval`**: Inline multiline JS may cause parsing errors. For multiline logic, write to a script file and pass its content:
+   ```bash
+   obsidian eval code="$(cat script.js)"
+   ```
+6. **Pipe-friendly**: Combine commands cleanly with Unix tools (`grep`, `jq`, `sed`, `awk`).
+
+---
+
+## Troubleshooting Guide
+
+| Problem | Root Cause | Solution |
+|---|---|---|
+| Empty output / command hangs | Obsidian is closed, or run from an Admin terminal on Windows | Ensure Obsidian is open; run from a standard-privilege terminal |
+| `command not found: obsidian` | CLI path not registered in shell environment | Toggle CLI OFF then ON in Obsidian Settings; restart terminal |
+| Exit code `127` on colon commands | Missing `Obsidian.com` or Git Bash resolving `.exe` | Reinstall Obsidian v1.12+; on Git Bash, use an `Obsidian.com` wrapper script |
+| Socket error / IPC failure on Linux | Systemd service isolation (`PrivateTmp=true`) or Snap | Set `PrivateTmp=false` in systemd unit; install official `.deb` package |
+| Headless Linux display error | No X server running | Run under `xvfb-run` or export `DISPLAY=:5` |
+| `Command "[Vault Name]" not found` | Shell argument parsing variation | Use `vault="[Vault Name]"` flag or switch to the vault in GUI |
