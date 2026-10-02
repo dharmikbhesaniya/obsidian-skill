@@ -27,12 +27,12 @@ A complete, production-grade intelligence and automation suite for [Obsidian](ht
 
 * **As a Plugin (Marketplace)**:
   ```bash
-  /plugin marketplace add https://github.com/kepano/obsidian-skills
-  /plugin install obsidian@obsidian-universal-skills
+  /plugin marketplace add https://github.com/dharmikbhesaniya/obsidian-skill
+  /plugin install obsidian@obsidian-skill
   ```
   *To install only the standalone CLI plugin:*
   ```bash
-  /plugin install obsidian-cli@obsidian-universal-skills
+  /plugin install obsidian-cli@obsidian-skill
   ```
 
 * **As a Local Plugin**:
@@ -45,7 +45,7 @@ A complete, production-grade intelligence and automation suite for [Obsidian](ht
   {
     "plugins": {
       "obsidian": {
-        "source": { "source": "github", "repo": "kepano/obsidian-skills" }
+        "source": { "source": "github", "repo": "dharmikbhesaniya/obsidian-skill" }
       }
     }
   }
@@ -118,7 +118,7 @@ cp -r skills/* ~/.codex/skills/
 #### OpenCode
 Clone the full repository into the OpenCode skills path:
 ```bash
-git clone https://github.com/kepano/obsidian-skills.git ~/.opencode/skills/obsidian-skills
+git clone https://github.com/dharmikbhesaniya/obsidian-skill.git ~/.opencode/skills/obsidian-skill
 ```
 OpenCode automatically discovers all `SKILL.md` files upon restart.
 
@@ -127,7 +127,7 @@ OpenCode automatically discovers all `SKILL.md` files upon restart.
 ### 6. Snowflake Cortex Code
 ```bash
 # Remote install
-/skill add https://github.com/kepano/obsidian-skills.git
+/skill add https://github.com/dharmikbhesaniya/obsidian-skill.git
 
 # Or user-level install
 mkdir -p ~/.snowflake/cortex/skills

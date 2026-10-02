@@ -3,8 +3,8 @@
   "description": "Interact with Obsidian vaults using the official Obsidian CLI (v1.12+). Read, create, append, search, and manage notes, daily notes, properties, tags, tasks, bookmarks, templates, themes, sync, plugins, and links — all from the terminal.",
   "version": "1.3.0",
   "author": {
-    "name": "pablo-mano"
+    "name": "Dharmik Bhesaniya"
   },
-  "homepage": "https://github.com/pablo-mano/Obsidian-CLI-skill",
-  "repository": "https://github.com/pablo-mano/Obsidian-CLI-skill"
+  "homepage": "https://github.com/dharmikbhesaniya/obsidian-skill",
+  "repository": "https://github.com/dharmikbhesaniya/obsidian-skill"
 }

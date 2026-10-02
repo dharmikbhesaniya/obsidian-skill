@@ -1,28 +1,30 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-  "name": "obsidian-universal-skills",
+  "name": "obsidian-skill",
   "description": "Universal Obsidian skills suite for AI coding agents — complete CLI control, markdown formatting, bases databases, JSON canvas, web extraction, and template workflows",
   "owner": {
-    "name": "Obsidian Skills Contributors"
+    "name": "Dharmik Bhesaniya"
   },
   "plugins": [
     {
       "name": "obsidian",
       "description": "Comprehensive skill suite for Obsidian: full CLI control, OFM formatting, Bases, JSON Canvas, Defuddle, and Knap.",
       "author": {
-        "name": "Obsidian Skills Contributors"
+        "name": "Dharmik Bhesaniya"
       },
       "source": "./plugins/obsidian",
-      "category": "productivity"
+      "category": "productivity",
+      "homepage": "https://github.com/dharmikbhesaniya/obsidian-skill"
     },
     {
       "name": "obsidian-cli",
       "description": "Interact with Obsidian vaults using the official Obsidian CLI (v1.12+). Read, create, append, search, and manage notes, daily notes, properties, tags, tasks, bookmarks, templates, themes, sync, plugins, and links — all from the terminal.",
       "author": {
-        "name": "Obsidian Skills Contributors"
+        "name": "Dharmik Bhesaniya"
       },
       "source": "./plugins/obsidian-cli",
-      "category": "productivity"
+      "category": "productivity",
+      "homepage": "https://github.com/dharmikbhesaniya/obsidian-skill"
     }
   ]
 }
