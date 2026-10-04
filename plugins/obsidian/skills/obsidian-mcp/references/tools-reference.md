@@ -133,7 +133,7 @@ List recently modified notes in the vault.
   - `limit` *(optional, integer)*: Maximum notes to return. Default: 20.
   - `vault` *(optional, string)*: Target vault.
 
-### `obsidian_outline`
+### `obsidian_outline` / `obsidian_get_outline`
 Extract heading hierarchy for a note.
 - **Parameters**:
   - `path` *(required, string)*: Vault-relative note path.
@@ -153,10 +153,10 @@ Select a random note from the vault.
   - `folder` *(optional, string)*: Subfolder scope.
   - `vault` *(optional, string)*: Target vault.
 
-### `obsidian_get_aliases`
-Extract configured aliases from note frontmatter.
+### `obsidian_get_aliases` / `obsidian_list_aliases`
+Extract configured aliases from note frontmatter or vault-wide.
 - **Parameters**:
-  - `path` *(required, string)*: Vault-relative note path.
+  - `path` *(optional, string)*: Vault-relative note path (if omitted, lists vault-wide alias index).
   - `vault` *(optional, string)*: Target vault.
 
 ---
@@ -347,11 +347,13 @@ Extract contextual frontmatter and related base records for a note.
 
 ## 11. Desktop & App Controls
 
-### `obsidian_open_in_app`
-Open a note or file inside the running Obsidian desktop application via URI protocol.
+### `obsidian_open_in_app` / `obsidian_open_note`
+Open a note or file inside the running Obsidian desktop application via URI protocol or CLI.
 - **Parameters**:
   - `path` *(required, string)*: Vault-relative note or file path.
+  - `newTab` *(optional, boolean)*: Open note in a new tab. Default: `false`.
   - `vault` *(optional, string)*: Target vault.
+- **Returns**: `{ path: string, opened: boolean, obsidianUri: string, message: string }`
 
 ### `obsidian_execute_command`
 Execute an Obsidian palette command by its ID.
