@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "obsidian": {
+      "command": "node",
+      "args": [
+        "/path/to/obsidian-mcp/dist/index.js"
+      ],
+      "env": {
+        "OBSIDIAN_VAULT_PATH": "/Users/username/Documents/MyVault",
+        "OBSIDIAN_VAULTS": "{\"Personal\":\"/Users/username/Documents/MyVault\",\"Work\":\"/Users/username/Documents/WorkVault\"}",
+        "OBSIDIAN_DEFAULT_VAULT": "Personal"
+      }
+    }
+  }
+}

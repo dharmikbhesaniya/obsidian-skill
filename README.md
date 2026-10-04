@@ -1,6 +1,6 @@
 # Universal Obsidian Suite: Skills & Plugins for AI Agents
 
-[![Version](https://img.shields.io/badge/version-v1.5.0-blue.svg)](https://github.com/dharmikbhesaniya/obsidian-skill)
+[![Version](https://img.shields.io/badge/version-v1.6.0-blue.svg)](https://github.com/dharmikbhesaniya/obsidian-skill)
 [![Obsidian](https://img.shields.io/badge/Obsidian-v1.12%2B-7C3AED?logo=obsidian&logoColor=white)](https://obsidian.md)
 [![Agent Skills](https://img.shields.io/badge/Agent_Skills-Standard-green.svg)](https://agentskills.io/specification)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -48,18 +48,19 @@ Modern AI agents often produce incomplete changes in Obsidian vaults because des
 │                      Universal Suite                        │
 ├──────────────────────────────┬──────────────────────────────┤
 │ Canonical Skills (skills/)   │ Pre-built Integrations       │
-│ • obsidian-cli (130+ cmds)   │ • Claude Code Plugins        │
-│ • obsidian-markdown (OFM)    │ • OpenAI Tools / ChatGPT     │
-│ • obsidian-bases (Databases) │ • Cursor MDC Rules           │
-│ • json-canvas (.canvas)      │ • Copilot & Windsurf Rules   │
-│ • defuddle (Web parser)      │ • Google Antigravity Plugin  │
-│ • knap (Batch templating)    │ • Snowflake Cortex           │
+│ • obsidian-mcp (51 tools)    │ • Claude Code Plugins        │
+│ • obsidian-cli (130+ cmds)   │ • OpenAI Tools / ChatGPT     │
+│ • obsidian-markdown (OFM)    │ • Cursor MDC Rules           │
+│ • obsidian-bases (Databases) │ • Copilot & Windsurf Rules   │
+│ • json-canvas (.canvas)      │ • Google Antigravity Plugin  │
+│ • defuddle (Web parser)      │ • Snowflake Cortex           │
+│ • knap (Batch templating)    │ • Hermes Agent               │
 └──────────────────────────────┴──────────────────────────────┘
 ```
 
 - **Skills Layer (`skills/`)**: Standalone markdown specifications readable directly by any LLM or Agent Skills runner.
 - **Plugins Layer (`plugins/`)**: Pre-configured packages for marketplace installation in systems supporting the Claude Plugin specification.
-- **Integrations Layer (`integrations/`)**: Drop-in configuration files, OpenAI function schemas, and IDE prompt rules.
+- **Integrations Layer (`integrations/`)**: Drop-in configuration files, OpenAI function schemas, MCP configurations, and IDE prompt rules.
 
 ---
 
@@ -67,6 +68,7 @@ Modern AI agents often produce incomplete changes in Obsidian vaults because des
 
 | Capability | Skill Path | Supported Formats / Tools | What It Enables |
 | :--- | :--- | :--- | :--- |
+| **Model Context Protocol (MCP)** | [`skills/obsidian-mcp`](skills/obsidian-mcp) | `obsidian-mcp` (stdio / SSE) | Transporter bridge: 51 tools for multi-vault routing, surgical patching, search, tasks, bookmarks, outline, and desktop commands. |
 | **CLI Automation** | [`skills/obsidian-cli`](skills/obsidian-cli) | Official Obsidian CLI (v1.12+) | Vault administration: 130+ commands for note CRUD, daily notes, search, tasks, tags, properties, bookmarks, templates, sync, and developer inspection. |
 | **Obsidian Markdown** | [`skills/obsidian-markdown`](skills/obsidian-markdown) | `.md` (OFM) | Authoring with native wikilinks (`[[Note]]`), block embeds (`![[Note#^id]]`), callouts (`> [!NOTE]`), and frontmatter properties. |
 | **Obsidian Bases** | [`skills/obsidian-bases`](skills/obsidian-bases) | `.base` | Creating and managing database schemas, formulas, table/card/list views, filters, and aggregations. |
@@ -110,6 +112,23 @@ cp -r skills/* .agents/skills/
 
 ### Option C: Use with OpenAI Function Calling
 Integrate [`integrations/openai/function_tools.json`](integrations/openai/function_tools.json) into your agent runtime tool definitions.
+
+### Option D: Connect via Model Context Protocol (MCP)
+Add `obsidian-mcp` to your MCP configuration (Claude Desktop, Antigravity, Cursor, Windsurf):
+```json
+{
+  "mcpServers": {
+    "obsidian": {
+      "command": "node",
+      "args": ["/path/to/obsidian-mcp/dist/index.js"],
+      "env": {
+        "OBSIDIAN_VAULT_PATH": "/path/to/vault"
+      }
+    }
+  }
+}
+```
+For complete multi-vault setup and schema tables, refer to [`skills/obsidian-mcp/references/mcp-setup.md`](skills/obsidian-mcp/references/mcp-setup.md).
 
 ---
 
@@ -183,16 +202,32 @@ Copy [`integrations/cursor/rules.md`](integrations/cursor/rules.md) into `.curso
 
 ### 4. Google Antigravity & Gemini IDE
 
-#### As a Workspace Plugin
-```bash
-mkdir -p .agents/plugins/obsidian
-cp -r ./* .agents/plugins/obsidian/
+#### Direct MCP Server Connection (Recommended)
+Add to your Antigravity configuration at `~/.gemini/config/mcp_config.json`:
+```json
+{
+  "mcpServers": {
+    "obsidian": {
+      "command": "node",
+      "args": ["/path/to/obsidian-mcp/dist/index.js"],
+      "env": {
+        "OBSIDIAN_VAULT_PATH": "/Users/username/Documents/MyVault",
+        "OBSIDIAN_VAULTS": "{\"Primary\":\"/Users/username/Documents/MyVault\",\"Work\":\"/Users/username/Documents/WorkVault\"}",
+        "OBSIDIAN_DEFAULT_VAULT": "Primary"
+      }
+    }
+  }
+}
 ```
+For ready-to-copy configs, see [`integrations/antigravity/mcp_config.json`](integrations/antigravity/mcp_config.json).
 
-#### As Workspace Skills
+#### As Workspace Skills & Rules
 ```bash
 mkdir -p .agents/skills
 cp -r skills/* .agents/skills/
+
+mkdir -p .agents/rules
+cp integrations/antigravity/rules.md .agents/rules/obsidian.md
 ```
 
 ---

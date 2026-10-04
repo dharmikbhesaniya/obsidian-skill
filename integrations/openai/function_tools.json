@@ -2,18 +2,99 @@
   {
     "type": "function",
     "function": {
-      "name": "obsidian_read_note",
-      "description": "Read the raw markdown content of a note from the Obsidian vault.",
+      "name": "obsidian_list_vaults",
+      "description": "Lists all configured Obsidian vaults with paths, file counts, and indicates the default active vault.",
+      "parameters": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_get_vault",
+      "description": "Returns vault metadata, file counts, and connectivity status for the default or specified vault.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "vault": {
+            "type": "string",
+            "description": "Target vault name if targeting a specific vault"
+          }
+        }
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_list_files",
+      "description": "Lists files and subdirectories under a vault folder with optional recursion and extension filtering.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "folder": {
+            "type": "string",
+            "description": "Relative folder path within vault (default root)"
+          },
+          "recursive": {
+            "type": "boolean",
+            "description": "Recursively list files (default true)"
+          },
+          "extension": {
+            "type": "string",
+            "description": "Filter by file extension, e.g. 'md', 'canvas', 'base'"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        }
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_get_file_info",
+      "description": "Returns filesystem and format metadata for a specified note or file in the vault.",
       "parameters": {
         "type": "object",
         "properties": {
           "path": {
             "type": "string",
-            "description": "Vault-relative path to the note (e.g. 'projects/roadmap.md')"
+            "description": "Vault-relative path to the file"
           },
           "vault": {
             "type": "string",
-            "description": "Optional vault name if targeting a specific vault"
+            "description": "Target vault name"
+          }
+        },
+        "required": ["path"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_read_note",
+      "description": "Reads the raw text content of a note. Supports optional base64 encoding.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Vault-relative path to the note (e.g. 'Projects/roadmap.md')"
+          },
+          "encoding": {
+            "type": "string",
+            "enum": ["utf-8", "base64"],
+            "description": "Character encoding (default utf-8)"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
           }
         },
         "required": ["path"]
@@ -24,29 +105,29 @@
     "type": "function",
     "function": {
       "name": "obsidian_create_note",
-      "description": "Create a new note in the Obsidian vault. Path should omit .md extension.",
+      "description": "Creates a new note with specified content or from a template.",
       "parameters": {
         "type": "object",
         "properties": {
           "path": {
             "type": "string",
-            "description": "Vault-relative path for the new note without .md (e.g. 'projects/new-feature')"
+            "description": "Vault-relative path for the new note"
           },
           "content": {
             "type": "string",
-            "description": "Initial markdown content for the note"
+            "description": "Initial markdown content"
           },
           "template": {
             "type": "string",
-            "description": "Name of a template to create the note from (alternative to content)"
+            "description": "Template name or path to instantiate note from"
           },
-          "silent": {
+          "overwrite": {
             "type": "boolean",
-            "description": "If true, do not open the note in the Obsidian UI"
+            "description": "Whether to overwrite existing note (default false)"
           },
           "vault": {
             "type": "string",
-            "description": "Optional vault name"
+            "description": "Target vault name"
           }
         },
         "required": ["path"]
@@ -57,21 +138,21 @@
     "type": "function",
     "function": {
       "name": "obsidian_append_note",
-      "description": "Append content to the end of an existing note.",
+      "description": "Appends content cleanly to the end of a note.",
       "parameters": {
         "type": "object",
         "properties": {
           "path": {
             "type": "string",
-            "description": "Vault-relative path to the note (e.g. 'projects/log.md')"
+            "description": "Vault-relative path to the note"
           },
           "content": {
             "type": "string",
-            "description": "Content to append to the note"
+            "description": "Content to append"
           },
           "vault": {
             "type": "string",
-            "description": "Optional vault name"
+            "description": "Target vault name"
           }
         },
         "required": ["path", "content"]
@@ -81,115 +162,91 @@
   {
     "type": "function",
     "function": {
-      "name": "obsidian_search",
-      "description": "Full-text search across the Obsidian vault. Returns matching file paths.",
+      "name": "obsidian_prepend_note",
+      "description": "Prepends content after YAML frontmatter in a note, preserving metadata.",
       "parameters": {
         "type": "object",
         "properties": {
-          "query": {
-            "type": "string",
-            "description": "Search term or phrase"
-          },
-          "path": {
-            "type": "string",
-            "description": "Optional folder scope to restrict search"
-          },
-          "limit": {
-            "type": "integer",
-            "description": "Maximum number of results to return"
-          },
-          "format": {
-            "type": "string",
-            "enum": ["text", "json"],
-            "description": "Output format (default: text)"
-          },
-          "vault": {
-            "type": "string",
-            "description": "Optional vault name"
-          }
-        },
-        "required": ["query"]
-      }
-    }
-  },
-  {
-    "type": "function",
-    "function": {
-      "name": "obsidian_daily_note",
-      "description": "Read or append content to today's daily note.",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "action": {
-            "type": "string",
-            "enum": ["read", "append", "prepend", "open", "path"],
-            "description": "Operation to perform on the daily note"
-          },
-          "content": {
-            "type": "string",
-            "description": "Content to append or prepend (required for append/prepend actions)"
-          },
-          "vault": {
-            "type": "string",
-            "description": "Optional vault name"
-          }
-        },
-        "required": ["action"]
-      }
-    }
-  },
-  {
-    "type": "function",
-    "function": {
-      "name": "obsidian_tasks",
-      "description": "Query tasks across the vault. Filter by status (all, todo, done) or scope (daily).",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "filter": {
-            "type": "string",
-            "enum": ["all", "todo", "done", "daily"],
-            "description": "Task filter (default: all)"
-          },
-          "vault": {
-            "type": "string",
-            "description": "Optional vault name"
-          }
-        }
-      }
-    }
-  },
-  {
-    "type": "function",
-    "function": {
-      "name": "obsidian_property",
-      "description": "Read, set, or remove a frontmatter property on a note.",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "action": {
-            "type": "string",
-            "enum": ["read", "set", "remove", "list"],
-            "description": "Operation to perform"
-          },
           "path": {
             "type": "string",
             "description": "Vault-relative path to the note"
           },
-          "name": {
+          "content": {
             "type": "string",
-            "description": "Property name (required for read, set, remove)"
-          },
-          "value": {
-            "type": "string",
-            "description": "Property value (required for set)"
+            "description": "Content to prepend"
           },
           "vault": {
             "type": "string",
-            "description": "Optional vault name"
+            "description": "Target vault name"
           }
         },
-        "required": ["action", "path"]
+        "required": ["path", "content"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_update_note",
+      "description": "Completely overwrites the content of an existing note. Use obsidian_patch_note for surgical edits.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Vault-relative path to the note"
+          },
+          "content": {
+            "type": "string",
+            "description": "New complete markdown content"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        },
+        "required": ["path", "content"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_patch_note",
+      "description": "Surgically edits a note via search-and-replace, regex replacement, or anchored insertion.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Vault-relative path to the note"
+          },
+          "search": {
+            "type": "string",
+            "description": "Exact text snippet to search for"
+          },
+          "replace": {
+            "type": "string",
+            "description": "Replacement text"
+          },
+          "regex": {
+            "type": "string",
+            "description": "Regex pattern to match"
+          },
+          "append": {
+            "type": "string",
+            "description": "Text to append if search/regex is omitted"
+          },
+          "prepend": {
+            "type": "string",
+            "description": "Text to prepend if search/regex is omitted"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        },
+        "required": ["path"]
       }
     }
   },
@@ -197,21 +254,21 @@
     "type": "function",
     "function": {
       "name": "obsidian_move_note",
-      "description": "Move or rename a note within the vault. Destructive — verify before executing.",
+      "description": "Moves or renames a note or file in the vault.",
       "parameters": {
         "type": "object",
         "properties": {
           "path": {
             "type": "string",
-            "description": "Current vault-relative path including .md extension"
+            "description": "Source vault-relative path"
           },
           "to": {
             "type": "string",
-            "description": "Destination vault-relative path including .md extension"
+            "description": "Destination vault-relative path"
           },
           "vault": {
             "type": "string",
-            "description": "Optional vault name"
+            "description": "Target vault name"
           }
         },
         "required": ["path", "to"]
@@ -222,21 +279,21 @@
     "type": "function",
     "function": {
       "name": "obsidian_delete_note",
-      "description": "Delete a note from the vault. Destructive — always verify the file exists and check backlinks before deleting. Defaults to trash unless 'permanent' is true.",
+      "description": "Deletes a note. Moves to vault trash by default unless permanent is true.",
       "parameters": {
         "type": "object",
         "properties": {
           "path": {
             "type": "string",
-            "description": "Vault-relative path to the note including .md extension"
+            "description": "Vault-relative path to the note"
           },
           "permanent": {
             "type": "boolean",
-            "description": "If true, permanently delete instead of moving to trash. Only use when the user explicitly requests permanent deletion."
+            "description": "If true, permanently delete rather than moving to trash (default false)"
           },
           "vault": {
             "type": "string",
-            "description": "Optional vault name"
+            "description": "Target vault name"
           }
         },
         "required": ["path"]
@@ -246,47 +303,801 @@
   {
     "type": "function",
     "function": {
-      "name": "obsidian_vault_analytics",
-      "description": "Run vault-wide analysis: list files, orphaned notes, unresolved links, tags, or backlinks.",
+      "name": "obsidian_search",
+      "description": "Full-text search across notes in the vault with optional scoping.",
       "parameters": {
         "type": "object",
         "properties": {
-          "analysis": {
+          "query": {
             "type": "string",
-            "enum": ["files", "orphans", "unresolved", "deadends", "tags", "backlinks"],
-            "description": "Type of analysis to perform"
+            "description": "Search term or phrase"
           },
-          "file": {
+          "path": {
             "type": "string",
-            "description": "Target file for backlinks analysis"
+            "description": "Optional folder scope restriction"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of results to return (default 50)"
+          },
+          "format": {
+            "type": "string",
+            "enum": ["text", "json"],
+            "description": "Output format (default text)"
           },
           "vault": {
             "type": "string",
-            "description": "Optional vault name"
+            "description": "Target vault name"
           }
         },
-        "required": ["analysis"]
+        "required": ["query"]
       }
     }
   },
   {
     "type": "function",
     "function": {
-      "name": "obsidian_cli",
-      "description": "Execute any raw Obsidian CLI command. Use this as an escape hatch for advanced operations not covered by the high-level tools above (e.g. plugin management, sync, eval, dev tools, base queries).",
+      "name": "obsidian_search_context",
+      "description": "Full-text search returning surrounding lines of context for each match.",
       "parameters": {
         "type": "object",
         "properties": {
-          "command": {
+          "query": {
             "type": "string",
-            "description": "The full Obsidian CLI command string (e.g. 'plugin:reload id=\"my-plugin\"', 'eval code=\"app.vault.getFiles().length\"', 'base:query path=\"tasks.base\"')"
+            "description": "Search query"
+          },
+          "contextLines": {
+            "type": "integer",
+            "description": "Number of context lines surrounding match (default 2)"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Max results"
           },
           "vault": {
             "type": "string",
-            "description": "Optional vault name if targeting a specific vault"
+            "description": "Target vault name"
           }
         },
-        "required": ["command"]
+        "required": ["query"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_find_notes",
+      "description": "Finds notes by filename or glob pattern matching.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "pattern": {
+            "type": "string",
+            "description": "Glob or substring pattern"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        },
+        "required": ["pattern"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_recent_changes",
+      "description": "Returns recently modified notes sorted by timestamp.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "description": "Maximum notes to return (default 20)"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        }
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_outline",
+      "description": "Extracts the heading outline tree of a note with line numbers.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Vault-relative note path"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        },
+        "required": ["path"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_word_count",
+      "description": "Calculates word count, character count, and estimated reading time for a note.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Vault-relative note path"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        },
+        "required": ["path"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_random_note",
+      "description": "Returns a random note path or content from the vault or folder.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "folder": {
+            "type": "string",
+            "description": "Optional folder scope"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        }
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_get_aliases",
+      "description": "Extracts configured aliases for a note from frontmatter.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Vault-relative note path"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        },
+        "required": ["path"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_read_daily_note",
+      "description": "Reads today's or a date-specified daily note.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "Date in YYYY-MM-DD format (default today)"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        }
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_append_daily_note",
+      "description": "Appends content to today's or a date-specified daily note.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "Content to append"
+          },
+          "date": {
+            "type": "string",
+            "description": "Target date (YYYY-MM-DD)"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        },
+        "required": ["content"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_prepend_daily_note",
+      "description": "Prepends content after frontmatter in today's or a date-specified daily note.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "Content to prepend"
+          },
+          "date": {
+            "type": "string",
+            "description": "Target date (YYYY-MM-DD)"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        },
+        "required": ["content"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_list_bookmarks",
+      "description": "Lists all saved bookmarks from .obsidian/bookmarks.json.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        }
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_create_bookmark",
+      "description": "Adds a bookmark entry for a note or file in the vault.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Vault-relative file path to bookmark"
+          },
+          "title": {
+            "type": "string",
+            "description": "Custom bookmark title"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        },
+        "required": ["path"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_list_templates",
+      "description": "Lists available template files in the vault.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        }
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_read_template",
+      "description": "Reads template content with preview support.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Template name or path"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        },
+        "required": ["name"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_create_unique_note",
+      "description": "Creates a Zettelkasten unique-prefix timestamped note (YYYYMMDDHHmmss title.md).",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Note title"
+          },
+          "content": {
+            "type": "string",
+            "description": "Initial content"
+          },
+          "folder": {
+            "type": "string",
+            "description": "Target folder within vault"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        },
+        "required": ["title"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_get_properties",
+      "description": "Retrieves all YAML frontmatter properties from a note as structured JSON.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Vault-relative note path"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        },
+        "required": ["path"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_get_property",
+      "description": "Reads a specific frontmatter property by key name.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Vault-relative note path"
+          },
+          "name": {
+            "type": "string",
+            "description": "Property key name"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        },
+        "required": ["path", "name"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_set_property",
+      "description": "Sets or updates a frontmatter property on a note.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Vault-relative note path"
+          },
+          "name": {
+            "type": "string",
+            "description": "Property key name"
+          },
+          "value": {
+            "description": "Value to set (string, number, boolean, array, or object)"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        },
+        "required": ["path", "name", "value"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_remove_property",
+      "description": "Deletes a frontmatter property key from a note.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Vault-relative note path"
+          },
+          "name": {
+            "type": "string",
+            "description": "Property key name"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        },
+        "required": ["path", "name"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_list_tasks",
+      "description": "Queries markdown tasks vault-wide or within a file, filtered by status.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Optional file path scope"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["all", "todo", "done"],
+            "description": "Task status filter (default all)"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        }
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_toggle_task",
+      "description": "Toggles completion of a task checkbox at a specific line number.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Vault-relative note path"
+          },
+          "line": {
+            "type": "integer",
+            "description": "1-based line number containing task"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        },
+        "required": ["path", "line"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_get_backlinks",
+      "description": "Finds all notes linking to a target note.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "string",
+            "description": "Target note name or path"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        },
+        "required": ["file"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_get_links",
+      "description": "Finds all outgoing links from a note.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Vault-relative note path"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        },
+        "required": ["path"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_get_link_path",
+      "description": "Resolves a wikilink target to its exact vault path.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "link": {
+            "type": "string",
+            "description": "Wikilink text (e.g. '[[Project Alpha]]')"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        },
+        "required": ["link"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_get_orphans",
+      "description": "Finds all notes with zero incoming and outgoing links.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        }
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_get_unresolved_links",
+      "description": "Finds broken wikilinks pointing to non-existent notes.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        }
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_get_deadends",
+      "description": "Finds notes that have incoming links but no outgoing links.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        }
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_get_tags",
+      "description": "Lists all tags across the vault with occurrence counts.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        }
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_get_tag_notes",
+      "description": "Lists all notes that contain a specific tag.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "tag": {
+            "type": "string",
+            "description": "Tag name (with or without #)"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        },
+        "required": ["tag"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_list_bases",
+      "description": "Lists all .base files in the vault.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        }
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_query_base",
+      "description": "Queries database views, records, and formula results from a .base file.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Vault-relative path to .base file"
+          },
+          "view": {
+            "type": "string",
+            "description": "View name within base"
+          },
+          "filter": {
+            "type": "string",
+            "description": "Filter criteria"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        },
+        "required": ["path"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_get_note_context",
+      "description": "Extracts contextual frontmatter and related base records for a note.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Vault-relative note path"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        },
+        "required": ["path"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_open_in_app",
+      "description": "Opens a note or file in the Obsidian desktop application via URI protocol.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Vault-relative file path"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        },
+        "required": ["path"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_execute_command",
+      "description": "Executes an Obsidian palette command by ID.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "commandId": {
+            "type": "string",
+            "description": "Obsidian command identifier"
+          },
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        },
+        "required": ["commandId"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_list_plugins",
+      "description": "Inspects installed community and core plugins and their enabled status.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        }
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "obsidian_list_snippets",
+      "description": "Inspects installed CSS snippets and their enabled status.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "vault": {
+            "type": "string",
+            "description": "Target vault name"
+          }
+        }
       }
     }
   }
