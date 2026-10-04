@@ -7,9 +7,10 @@
 
 Universal Obsidian Suite is an enterprise-grade automation and knowledge system for [Obsidian](https://obsidian.md). It provides standardized capabilities for AI coding agents, assistants, and IDEs to inspect, author, query, and manage Obsidian vaults with full fidelity.
 
-The repository offers two complementary delivery formats:
+The repository offers three complementary delivery formats:
 1. **Agent Skills**: Open instruction modules adhering to the [Agent Skills standard](https://agentskills.io/specification), discoverable across 20+ AI agents.
 2. **AI Plugins & Integrations**: Pre-packaged plugins and prompt rules configured for Claude Code, OpenAI API / ChatGPT, Cursor, Google Antigravity, GitHub Copilot, and Windsurf.
+3. **Model Context Protocol (MCP) Skill**: Operational instructions built specifically for the companion MCP repository: [dharmikbhesaniya/obsidian-mcp](https://github.com/dharmikbhesaniya/obsidian-mcp).
 
 ---
 
@@ -17,6 +18,7 @@ The repository offers two complementary delivery formats:
 
 - [Overview & Architecture](#overview--architecture)
 - [Feature & Capability Matrix](#feature--capability-matrix)
+- [Companion MCP Server Requirement](#companion-mcp-server-requirement)
 - [Reliability & Silent Failure Guardrails](#reliability--silent-failure-guardrails)
 - [Quick Start](#quick-start)
 - [Platform & Setup Guides](#platform--setup-guides)
@@ -49,12 +51,12 @@ Modern AI agents often produce incomplete changes in Obsidian vaults because des
 ├──────────────────────────────┬──────────────────────────────┤
 │ Canonical Skills (skills/)   │ Pre-built Integrations       │
 │ • obsidian-cli (130+ cmds)   │ • Claude Code Plugins        │
-│ • obsidian-markdown (OFM)    │ • OpenAI Tools / ChatGPT     │
-│ • obsidian-bases (Databases) │ • Cursor MDC Rules           │
-│ • json-canvas (.canvas)      │ • Copilot & Windsurf Rules   │
-│ • defuddle (Web parser)      │ • Google Antigravity Plugin  │
-│ • knap (Batch templating)    │ • Snowflake Cortex           │
-│                              │ • Hermes Agent               │
+│ • obsidian-mcp (54 tools)*   │ • OpenAI Tools / ChatGPT     │
+│ • obsidian-markdown (OFM)    │ • Cursor MDC Rules           │
+│ • obsidian-bases (Databases) │ • Copilot & Windsurf Rules   │
+│ • json-canvas (.canvas)      │ • Google Antigravity Plugin  │
+│ • defuddle (Web parser)      │ • Snowflake Cortex           │
+│ • knap (Batch templating)    │ • Hermes Agent               │
 └──────────────────────────────┴──────────────────────────────┘
 ```
 
@@ -69,11 +71,21 @@ Modern AI agents often produce incomplete changes in Obsidian vaults because des
 | Capability | Skill Path | Supported Formats / Tools | What It Enables |
 | :--- | :--- | :--- | :--- |
 | **CLI Automation** | [`skills/obsidian-cli`](skills/obsidian-cli) | Official Obsidian CLI (v1.12+) | Vault administration: 130+ commands for note CRUD, daily notes, search, tasks, tags, properties, bookmarks, templates, outline, aliases, wordcount, random/unique notes, sync, bases, desktop open, snippets, and developer inspection. |
+| **MCP Integration** | [`skills/obsidian-mcp`](skills/obsidian-mcp) | Model Context Protocol | 54 strongly typed semantic operations for vault authoring, surgical patching, property management, task toggling, graph links, and multi-vault isolation. *(Works exclusively with the companion repository: [dharmikbhesaniya/obsidian-mcp](https://github.com/dharmikbhesaniya/obsidian-mcp))*. |
 | **Obsidian Markdown** | [`skills/obsidian-markdown`](skills/obsidian-markdown) | `.md` (OFM) | Authoring with native wikilinks (`[[Note]]`), block embeds (`![[Note#^id]]`), callouts (`> [!NOTE]`), and frontmatter properties. |
 | **Obsidian Bases** | [`skills/obsidian-bases`](skills/obsidian-bases) | `.base` | Creating and managing database schemas, formulas, table/card/list views, filters, and aggregations. |
 | **JSON Canvas** | [`skills/json-canvas`](skills/json-canvas) | `.canvas` | Creating visual graphs, cards, file nodes, edges, labels, and group boundaries according to JSON Canvas spec. |
 | **Web Content Parsing** | [`skills/defuddle`](skills/defuddle) | `defuddle` CLI | Extracting clean, structured Markdown from web pages to minimize agent context window and token usage. |
 | **Template Batching** | [`skills/knap`](skills/knap) | `knap` CLI | Rendering liquid-style Markdown templates from JSON/CSV files and batch-generating structured notes. |
+
+---
+
+## Companion MCP Server Requirement
+
+> [!IMPORTANT]
+> **Exclusive Compatibility Notice**:
+> The [`obsidian-mcp`](skills/obsidian-mcp) skill is engineered exclusively for and works only with the official companion repository: **[dharmikbhesaniya/obsidian-mcp](https://github.com/dharmikbhesaniya/obsidian-mcp)**.
+> It requires the typed semantic tools, atomic path isolation guards, optimistic concurrency locking (`expectedRevision`), and multi-vault targeting implemented in that companion MCP server. Ensure that server is configured and running in your agent environment.
 
 ---
 
