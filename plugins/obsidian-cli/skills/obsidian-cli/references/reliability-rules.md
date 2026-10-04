@@ -105,3 +105,6 @@ If `obsidian vault` fails or hangs, the CLI is not connected to a running Obsidi
 5. Prefer `vault="Name"` over positional `"Name"` for multi-vault targeting.
 6. Run `obsidian vault` first to confirm CLI connectivity before running commands.
 7. Fall back to direct file tools (Read/Write/Grep) when CLI is unavailable.
+8. Use `create path="..." template="..." silent` instead of `template:insert` (which requires an active open tab in the UI).
+9. Use `read` for file inspection; `open` only switches desktop UI focus.
+10. Ensure the Bookmarks core plugin is enabled before querying `bookmarks`.

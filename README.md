@@ -48,19 +48,19 @@ Modern AI agents often produce incomplete changes in Obsidian vaults because des
 │                      Universal Suite                        │
 ├──────────────────────────────┬──────────────────────────────┤
 │ Canonical Skills (skills/)   │ Pre-built Integrations       │
-│ • obsidian-mcp (51 tools)    │ • Claude Code Plugins        │
-│ • obsidian-cli (130+ cmds)   │ • OpenAI Tools / ChatGPT     │
-│ • obsidian-markdown (OFM)    │ • Cursor MDC Rules           │
-│ • obsidian-bases (Databases) │ • Copilot & Windsurf Rules   │
-│ • json-canvas (.canvas)      │ • Google Antigravity Plugin  │
-│ • defuddle (Web parser)      │ • Snowflake Cortex           │
-│ • knap (Batch templating)    │ • Hermes Agent               │
+│ • obsidian-cli (130+ cmds)   │ • Claude Code Plugins        │
+│ • obsidian-markdown (OFM)    │ • OpenAI Tools / ChatGPT     │
+│ • obsidian-bases (Databases) │ • Cursor MDC Rules           │
+│ • json-canvas (.canvas)      │ • Copilot & Windsurf Rules   │
+│ • defuddle (Web parser)      │ • Google Antigravity Plugin  │
+│ • knap (Batch templating)    │ • Snowflake Cortex           │
+│                              │ • Hermes Agent               │
 └──────────────────────────────┴──────────────────────────────┘
 ```
 
 - **Skills Layer (`skills/`)**: Standalone markdown specifications readable directly by any LLM or Agent Skills runner.
 - **Plugins Layer (`plugins/`)**: Pre-configured packages for marketplace installation in systems supporting the Claude Plugin specification.
-- **Integrations Layer (`integrations/`)**: Drop-in configuration files, OpenAI function schemas, MCP configurations, and IDE prompt rules.
+- **Integrations Layer (`integrations/`)**: Drop-in configuration files, OpenAI function schemas, and IDE prompt rules.
 
 ---
 
@@ -68,8 +68,7 @@ Modern AI agents often produce incomplete changes in Obsidian vaults because des
 
 | Capability | Skill Path | Supported Formats / Tools | What It Enables |
 | :--- | :--- | :--- | :--- |
-| **Model Context Protocol (MCP)** | [`skills/obsidian-mcp`](skills/obsidian-mcp) | `obsidian-mcp` (stdio / SSE) | Transporter bridge: 51 tools for multi-vault routing, surgical patching, search, tasks, bookmarks, outline, and desktop commands. |
-| **CLI Automation** | [`skills/obsidian-cli`](skills/obsidian-cli) | Official Obsidian CLI (v1.12+) | Vault administration: 130+ commands for note CRUD, daily notes, search, tasks, tags, properties, bookmarks, templates, sync, and developer inspection. |
+| **CLI Automation** | [`skills/obsidian-cli`](skills/obsidian-cli) | Official Obsidian CLI (v1.12+) | Vault administration: 130+ commands for note CRUD, daily notes, search, tasks, tags, properties, bookmarks, templates, outline, aliases, wordcount, random/unique notes, sync, bases, desktop open, snippets, and developer inspection. |
 | **Obsidian Markdown** | [`skills/obsidian-markdown`](skills/obsidian-markdown) | `.md` (OFM) | Authoring with native wikilinks (`[[Note]]`), block embeds (`![[Note#^id]]`), callouts (`> [!NOTE]`), and frontmatter properties. |
 | **Obsidian Bases** | [`skills/obsidian-bases`](skills/obsidian-bases) | `.base` | Creating and managing database schemas, formulas, table/card/list views, filters, and aggregations. |
 | **JSON Canvas** | [`skills/json-canvas`](skills/json-canvas) | `.canvas` | Creating visual graphs, cards, file nodes, edges, labels, and group boundaries according to JSON Canvas spec. |
@@ -112,23 +111,6 @@ cp -r skills/* .agents/skills/
 
 ### Option C: Use with OpenAI Function Calling
 Integrate [`integrations/openai/function_tools.json`](integrations/openai/function_tools.json) into your agent runtime tool definitions.
-
-### Option D: Connect via Model Context Protocol (MCP)
-Add `obsidian-mcp` to your MCP configuration (Claude Desktop, Antigravity, Cursor, Windsurf):
-```json
-{
-  "mcpServers": {
-    "obsidian": {
-      "command": "node",
-      "args": ["/path/to/obsidian-mcp/dist/index.js"],
-      "env": {
-        "OBSIDIAN_VAULT_PATH": "/path/to/vault"
-      }
-    }
-  }
-}
-```
-For complete multi-vault setup and schema tables, refer to [`skills/obsidian-mcp/references/mcp-setup.md`](skills/obsidian-mcp/references/mcp-setup.md).
 
 ---
 

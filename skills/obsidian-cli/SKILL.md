@@ -1,11 +1,12 @@
 ---
 name: obsidian-cli
-version: "1.3.0"
+version: "1.4.0"
 description: >
   Use this skill whenever the user wants to interact with their Obsidian vault from the
   command line or have an AI agent perform operations on notes, daily notes, properties,
-  tags, tasks, links, bookmarks, templates, sync history, Bases, or file recovery. Also
-  supports Obsidian plugin and theme development with commands to reload plugins, run
+  tags, tasks, links, bookmarks, templates, sync history, Bases, outlines, word count,
+  random notes, unique notes, desktop navigation, or file recovery. Also supports Obsidian
+  plugin and theme development with commands to reload plugins, inspect snippets, run
   JavaScript in app context, capture errors, take screenshots, inspect DOM and CSS, and
   toggle mobile emulation. Treat requests implying "go into my vault and do X" as an
   action trigger. Skip for pure conceptual questions about GUI navigation or settings.
@@ -33,6 +34,21 @@ triggers:
   - "sync history"
   - "obsidian bases"
   - "file history"
+  - "bookmarks"
+  - "bookmark"
+  - "outline"
+  - "aliases"
+  - "templates"
+  - "template"
+  - "word count"
+  - "wordcount"
+  - "random note"
+  - "unique note"
+  - "open in obsidian"
+  - "open note"
+  - "css snippets"
+  - "obsidian command"
+  - "hotkeys"
   - "reload plugin"
   - "dev:screenshot"
   - "obsidian eval"
@@ -187,6 +203,107 @@ obsidian task path="note.md" line=12 toggle
 ```
 
 > **Gotcha — tasks scope**: `tasks` or `tasks todo` without `all` defaults to the active file scope (often nothing is active via CLI), returning **0 results silently**. Always use `tasks all` for vault-wide queries.
+
+### Bookmarks
+
+```bash
+obsidian bookmarks                                      # List all saved bookmarks
+obsidian bookmark file="folder/note.md"                 # Bookmark a note
+obsidian bookmark file="folder/note.md" title="Custom"  # Bookmark with custom title
+obsidian bookmark file="folder/note.md" subpath="#H2"   # Bookmark specific heading
+obsidian bookmark search="query text" title="Saved"     # Bookmark a search query
+```
+
+### Outline & Document Structure
+
+```bash
+obsidian outline path="projects/roadmap.md"             # Heading hierarchy
+obsidian outline path="projects/roadmap.md" format=json # Structured heading tree with line offsets
+```
+
+### Aliases
+
+```bash
+obsidian aliases path="notes/concept.md"                # Note aliases from frontmatter
+obsidian aliases                                        # Vault-wide alias lookup table
+```
+
+### Templates & Dynamic Variables
+
+```bash
+obsidian templates                                      # List available template files
+obsidian template:read name="meeting-notes"             # Read template raw text
+obsidian template:read name="meeting-notes" resolve title="Design Review" # Resolve {{title}}, {{date}}, {{time}}
+obsidian create path="meetings/review" template="meeting-notes" silent    # Create note from template
+```
+
+> **Gotcha — templates**: `template:insert` inserts into whichever file is currently active in the Obsidian desktop UI window and fails if no note is open. Use `obsidian create path="..." template="..." silent` for robust programmatic creation.
+
+### Word Count & Document Metrics
+
+```bash
+obsidian wordcount path="notes/article.md"              # Words, characters, sentences, and reading time
+```
+
+### Random & Unique Notes
+
+```bash
+obsidian random:read                                    # Read content of random note to stdout
+obsidian random:read folder="quotes"                    # Scoped to folder
+obsidian random                                         # Open random note in UI
+obsidian unique title="Core Concept"                    # Create timestamped Zettelkasten note
+```
+
+### Desktop Navigation & Open
+
+```bash
+obsidian open path="projects/roadmap.md"                # Focus/open note in Obsidian UI
+obsidian open path="projects/roadmap.md" newtab         # Open note in a new tab
+```
+
+### Obsidian Commands & Hotkeys
+
+```bash
+obsidian commands                                       # List all command IDs
+obsidian commands filter="theme"                        # Filter command palette IDs
+obsidian command id="app:toggle-left-sidebar"           # Trigger command by ID
+obsidian hotkeys                                        # Inspect assigned keybindings
+```
+
+### CSS Snippets
+
+```bash
+obsidian snippets                                       # List installed CSS snippets
+obsidian snippets:enabled                               # List enabled snippets
+obsidian snippet:enable name="card-view"                # Enable snippet
+obsidian snippet:disable name="card-view"               # Disable snippet
+```
+
+### Obsidian Bases
+
+```bash
+obsidian bases                                          # List all .base files in vault
+obsidian base:query file="tasks" format=json            # Query database records as JSON
+obsidian base:query path="data/tasks.base" view="Table" # Query specific view
+obsidian base:views file="tasks"                        # List views defined in base
+```
+
+### File Recovery & History Snapshots
+
+```bash
+obsidian history:list                                   # List files with local snapshots
+obsidian history path="notes/draft.md"                  # List snapshot timestamps
+obsidian history:read path="notes/draft.md" version=2   # Read previous snapshot
+obsidian history:restore path="notes/draft.md" version=2 # Restore snapshot version
+```
+
+### Obsidian Sync
+
+```bash
+obsidian sync:status                                    # Current sync engine state
+obsidian sync:history path="notes/draft.md"             # Remote version history
+obsidian sync:deleted                                   # List files deleted via sync
+```
 
 ---
 
