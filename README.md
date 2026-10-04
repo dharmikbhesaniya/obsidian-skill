@@ -245,19 +245,30 @@ defuddle parse https://example.com/article --md --json \
 ## 🧪 Evaluation & Benchmark Suite
 
 An automated prompt classification dataset and interactive review UI are provided in [`eval/`](eval/):
-- **[`eval/eval_set.json`](eval/eval_set.json)**: 30+ categorized test prompts for evaluating agent trigger precision.
-- **[`eval/eval_review.html`](eval/eval_review.html)**: Interactive browser UI for visualizing evaluation benchmarks.
+- **[`eval/eval_set.json`](eval/eval_set.json)**: 42 test cases covering intent classification, negative triggering, CLI regression traps (silent failure mitigations), and end-to-end multi-step agent workflows.
+- **[`eval/eval_review.html`](eval/eval_review.html)**: Interactive browser UI for visualizing evaluation benchmarks and test coverage.
 
 ---
 
 ## 📚 Detailed References
 
 - [CLI 130+ Command Reference](skills/obsidian-cli/references/command-reference.md)
+- [CLI Reliability & Silent Failure Rules](skills/obsidian-cli/references/reliability-rules.md)
 - [Obsidian Callouts Reference](skills/obsidian-markdown/references/CALLOUTS.md)
 - [Obsidian Embeds Reference](skills/obsidian-markdown/references/EMBEDS.md)
 - [Obsidian Properties Reference](skills/obsidian-markdown/references/PROPERTIES.md)
 - [Obsidian Bases Formula Reference](skills/obsidian-bases/references/FUNCTIONS_REFERENCE.md)
 - [JSON Canvas Examples](skills/json-canvas/references/EXAMPLES.md)
+
+---
+
+## 🔄 Maintenance & Single Source of Truth
+
+The canonical source of truth for all skills resides under [`skills/`](skills/). To synchronize any changes directly to the plugin mirrors without drift:
+
+```bash
+bash sync_plugins.sh
+```
 
 ---
 

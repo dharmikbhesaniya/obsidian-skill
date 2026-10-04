@@ -1,6 +1,6 @@
 {
   "name": "obsidian-skill",
-  "version": "1.3.0",
+  "version": "1.5.0",
   "description": "Comprehensive Agent Skills suite for Obsidian: CLI automation (130+ commands), Obsidian Flavored Markdown, Bases databases, JSON Canvas, web content extraction (Defuddle), and template batching (Knap).",
   "author": {
     "name": "Dharmik Bhesaniya"

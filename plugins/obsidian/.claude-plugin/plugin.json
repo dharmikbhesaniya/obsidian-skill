@@ -1,6 +1,6 @@
 {
   "name": "obsidian",
-  "version": "1.3.0",
+  "version": "1.5.0",
   "description": "Comprehensive skill suite for Obsidian: full CLI control, OFM formatting, Bases, JSON Canvas, Defuddle, and Knap.",
   "author": {
     "name": "Dharmik Bhesaniya"
