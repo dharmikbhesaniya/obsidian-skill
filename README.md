@@ -28,6 +28,7 @@ The repository offers two complementary delivery formats:
   - [6. Snowflake Cortex Code](#6-snowflake-cortex-code)
   - [7. GitHub Copilot](#7-github-copilot)
   - [8. Windsurf / Codeium Cascade](#8-windsurf--codeium-cascade)
+  - [9. Hermes Agent (Nous Research)](#9-hermes-agent-nous-research)
   - [Community Integrations](#community-integrations)
 - [CLI Prerequisites & Operating System Setup](#cli-prerequisites--operating-system-setup)
 - [Practical Workflows & Command Examples](#practical-workflows--command-examples)
@@ -233,6 +234,27 @@ Copy [`integrations/copilot/copilot-instructions.md`](integrations/copilot/copil
 ### 8. Windsurf / Codeium Cascade
 
 Copy [`integrations/windsurf/obsidian_rules.md`](integrations/windsurf/obsidian_rules.md) to `.windsurf/rules/obsidian.md`.
+
+---
+
+### 9. Hermes Agent (Nous Research)
+
+#### Direct Skills Directory
+Hermes Agent indexes skills directly from its local skills storage:
+```bash
+mkdir -p ~/.hermes/skills
+cp -r skills/* ~/.hermes/skills/
+```
+
+#### Via External Skills Configuration
+Add the canonical `skills/` path to `~/.hermes/config.yaml`:
+```yaml
+skills:
+  external_dirs:
+    - "/path/to/obsidian-universal-skills/skills"
+```
+
+For full details, see [`integrations/hermes/README.md`](integrations/hermes/README.md).
 
 ---
 
