@@ -1,7 +1,7 @@
 {
   "name": "obsidian-skill",
-  "version": "1.5.0",
-  "description": "Comprehensive Agent Skills suite for Obsidian: CLI automation (130+ commands), Obsidian Flavored Markdown, Bases databases, JSON Canvas, web content extraction (Defuddle), and template batching (Knap).",
+  "version": "1.7.0",
+  "description": "Comprehensive Agent Skills suite for Obsidian: Model Context Protocol (MCP) semantic operations (with companion repo https://github.com/dharmikbhesaniya/obsidian-mcp), CLI automation (130+ commands), Obsidian Flavored Markdown, Bases databases, JSON Canvas, web content extraction (Defuddle), and template batching (Knap).",
   "author": {
     "name": "Dharmik Bhesaniya"
   },
@@ -10,6 +10,8 @@
   "license": "MIT",
   "keywords": [
     "obsidian",
+    "mcp",
+    "model-context-protocol",
     "cli",
     "markdown",
     "bases",

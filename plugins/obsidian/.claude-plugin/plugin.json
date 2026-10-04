@@ -1,11 +1,22 @@
 {
   "name": "obsidian",
-  "version": "1.6.0",
-  "description": "Comprehensive skill suite for Obsidian: full CLI automation (130+ commands), OFM formatting, Bases, JSON Canvas, Defuddle, and Knap.",
+  "version": "1.7.0",
+  "description": "Comprehensive skill suite for Obsidian: Model Context Protocol (MCP) semantic tools (with companion repo https://github.com/dharmikbhesaniya/obsidian-mcp), full CLI automation (130+ commands), OFM formatting, Bases, JSON Canvas, Defuddle, and Knap.",
   "author": {
     "name": "Dharmik Bhesaniya"
   },
   "repository": "https://github.com/dharmikbhesaniya/obsidian-skill",
   "homepage": "https://github.com/dharmikbhesaniya/obsidian-skill",
-  "license": "MIT"
+  "license": "MIT",
+  "keywords": [
+    "obsidian",
+    "mcp",
+    "model-context-protocol",
+    "cli",
+    "markdown",
+    "bases",
+    "canvas",
+    "defuddle",
+    "knap"
+  ]
 }

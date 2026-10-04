@@ -7,7 +7,7 @@
   "plugins": [
     {
       "name": "obsidian",
-      "description": "Comprehensive skill suite for Obsidian: full CLI control, OFM formatting, Bases, JSON Canvas, Defuddle, and Knap.",
+      "description": "Comprehensive skill suite for Obsidian: full CLI control, Model Context Protocol (MCP) semantic tools (with companion repo https://github.com/dharmikbhesaniya/obsidian-mcp), OFM formatting, Bases, JSON Canvas, Defuddle, and Knap.",
       "author": {
         "name": "Dharmik Bhesaniya"
       },
@@ -22,6 +22,16 @@
         "name": "Dharmik Bhesaniya"
       },
       "source": "./plugins/obsidian-cli",
+      "category": "productivity",
+      "homepage": "https://github.com/dharmikbhesaniya/obsidian-skill"
+    },
+    {
+      "name": "obsidian-mcp",
+      "description": "Interact with Obsidian vaults using 54 Model Context Protocol (MCP) semantic tools for note authoring, surgical patching, property management, tasks, and multi-vault isolation with companion repository https://github.com/dharmikbhesaniya/obsidian-mcp.",
+      "author": {
+        "name": "Dharmik Bhesaniya"
+      },
+      "source": "./plugins/obsidian-mcp",
       "category": "productivity",
       "homepage": "https://github.com/dharmikbhesaniya/obsidian-skill"
     }

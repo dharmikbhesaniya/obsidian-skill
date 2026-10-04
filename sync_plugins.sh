@@ -12,6 +12,11 @@ echo "Syncing skills/ → plugins/obsidian/skills/"
 rsync -a --delete "$SKILLS_DIR/" "$REPO_ROOT/plugins/obsidian/skills/"
 
 echo "Syncing skills/obsidian-cli/ → plugins/obsidian-cli/skills/obsidian-cli/"
+mkdir -p "$REPO_ROOT/plugins/obsidian-cli/skills/obsidian-cli"
 rsync -a --delete "$SKILLS_DIR/obsidian-cli/" "$REPO_ROOT/plugins/obsidian-cli/skills/obsidian-cli/"
+
+echo "Syncing skills/obsidian-mcp/ → plugins/obsidian-mcp/skills/obsidian-mcp/"
+mkdir -p "$REPO_ROOT/plugins/obsidian-mcp/skills/obsidian-mcp"
+rsync -a --delete "$SKILLS_DIR/obsidian-mcp/" "$REPO_ROOT/plugins/obsidian-mcp/skills/obsidian-mcp/"
 
 echo "✓ Plugin mirrors are in sync with skills/"

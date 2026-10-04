@@ -1,0 +1,19 @@
+{
+  "name": "obsidian-mcp",
+  "version": "1.0.0",
+  "description": "Control and query Obsidian vaults using 54 typed Model Context Protocol (MCP) semantic tools for note authoring, surgical patching, property management, tasks, and multi-vault isolation with companion repository https://github.com/dharmikbhesaniya/obsidian-mcp.",
+  "author": {
+    "name": "Dharmik Bhesaniya"
+  },
+  "homepage": "https://github.com/dharmikbhesaniya/obsidian-skill",
+  "repository": "https://github.com/dharmikbhesaniya/obsidian-skill",
+  "license": "MIT",
+  "keywords": [
+    "obsidian",
+    "mcp",
+    "model-context-protocol",
+    "vault",
+    "notes",
+    "automation"
+  ]
+}
