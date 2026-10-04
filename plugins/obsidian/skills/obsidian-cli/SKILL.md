@@ -43,6 +43,8 @@ triggers:
 The official Obsidian CLI (v1.12+) enables comprehensive control of an Obsidian desktop instance from the command line over IPC. Requires Obsidian desktop to be running.
 
 > For exhaustive documentation on all 130+ commands, parameter tables, and output formats, refer to [`references/command-reference.md`](references/command-reference.md).
+>
+> For known CLI silent failures, scope traps, and workarounds, refer to [`references/reliability-rules.md`](references/reliability-rules.md).
 
 ---
 

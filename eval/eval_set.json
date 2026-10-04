@@ -267,5 +267,141 @@
     "intent": "third_party_plugin_syntax",
     "expected_capability": [],
     "destructive": false
+  },
+
+  {
+    "_category": "regression_cli_gotcha",
+    "query": "list all tags in my vault with their counts",
+    "should_trigger": true,
+    "intent": "tag_analytics",
+    "expected_capability": ["obsidian-cli"],
+    "destructive": false,
+    "expected_actions": ["tags"],
+    "required_flags": ["all", "counts"],
+    "regression_note": "Must use 'tags all counts' — without 'all' returns empty results"
+  },
+  {
+    "_category": "regression_cli_gotcha",
+    "query": "show me all my open tasks across the entire vault",
+    "should_trigger": true,
+    "intent": "task_query",
+    "expected_capability": ["obsidian-cli"],
+    "destructive": false,
+    "expected_actions": ["tasks"],
+    "required_flags": ["all", "todo"],
+    "regression_note": "Must use 'tasks all todo' — without 'all' defaults to active file (empty via CLI)"
+  },
+  {
+    "_category": "regression_cli_gotcha",
+    "query": "search my vault for 'kubernetes deployment' and give me the file names and line numbers",
+    "should_trigger": true,
+    "intent": "search",
+    "expected_capability": ["obsidian-cli"],
+    "destructive": false,
+    "expected_actions": ["search"],
+    "required_flags": ["format=json", "matches"],
+    "regression_note": "Must use 'format=json matches' for structured output — default returns unstructured text"
+  },
+  {
+    "_category": "regression_cli_gotcha",
+    "query": "list all properties on my project-plan.md file in a parseable format",
+    "should_trigger": true,
+    "intent": "property_read",
+    "expected_capability": ["obsidian-cli"],
+    "destructive": false,
+    "expected_actions": ["properties"],
+    "required_flags": ["format=tsv"],
+    "regression_note": "Must use 'format=tsv' — 'format=json' returns YAML-like output, not valid JSON"
+  },
+  {
+    "_category": "regression_cli_gotcha",
+    "query": "create a new note called 'meeting-recap' with some initial content",
+    "should_trigger": true,
+    "intent": "create",
+    "expected_capability": ["obsidian-cli"],
+    "destructive": false,
+    "expected_actions": ["create"],
+    "required_flags": ["silent"],
+    "regression_note": "Must include 'silent' flag — without it, Obsidian opens the file in its UI"
+  },
+
+  {
+    "_category": "workflow_end_to_end",
+    "query": "create a new note from my standup template, set the status property to 'draft', then append today's agenda items",
+    "should_trigger": true,
+    "intent": "create_configure_append",
+    "expected_capability": ["obsidian-cli"],
+    "destructive": false,
+    "expected_actions": ["create", "property:set", "append"],
+    "workflow_steps": [
+      "create note from template with silent flag",
+      "set status property to draft",
+      "verify property was set",
+      "append agenda content",
+      "verify content was appended"
+    ]
+  },
+  {
+    "_category": "workflow_end_to_end",
+    "query": "find all notes about the Henderson project, read the most recent one, then add a summary to my daily note",
+    "should_trigger": true,
+    "intent": "search_read_capture",
+    "expected_capability": ["obsidian-cli"],
+    "destructive": false,
+    "expected_actions": ["search", "read", "daily:append"],
+    "workflow_steps": [
+      "search vault with format=json matches",
+      "read the most relevant result",
+      "append summary to daily note"
+    ]
+  },
+  {
+    "_category": "workflow_end_to_end",
+    "query": "move my old project notes from inbox/ to archive/2026/ and update the status property on each one to 'archived'",
+    "should_trigger": true,
+    "intent": "organize_batch",
+    "expected_capability": ["obsidian-cli"],
+    "destructive": true,
+    "requires_verification": true,
+    "expected_actions": ["files", "move", "property:set"],
+    "workflow_steps": [
+      "list files in inbox/",
+      "for each file: verify it exists, check backlinks",
+      "move file to archive/2026/",
+      "verify file at new path",
+      "set status property to archived",
+      "verify property was set"
+    ]
+  },
+  {
+    "_category": "workflow_end_to_end",
+    "query": "go through my vault, find all orphaned notes with no links, and create a daily note entry listing them so i can review later",
+    "should_trigger": true,
+    "intent": "audit_report",
+    "expected_capability": ["obsidian-cli"],
+    "destructive": false,
+    "expected_actions": ["orphans", "daily:append"],
+    "workflow_steps": [
+      "run orphans to find unlinked notes",
+      "format the results into a readable list",
+      "append the list to the daily note"
+    ]
+  },
+  {
+    "_category": "workflow_end_to_end",
+    "query": "delete scratch/temp-notes.md but first check if anything links to it",
+    "should_trigger": true,
+    "intent": "safe_delete",
+    "expected_capability": ["obsidian-cli"],
+    "destructive": true,
+    "requires_verification": true,
+    "expected_actions": ["file", "backlinks", "delete"],
+    "workflow_steps": [
+      "verify file exists at path",
+      "check incoming backlinks",
+      "report backlinks to user if any exist",
+      "delete to trash (not permanent)",
+      "verify file is gone"
+    ]
   }
 ]
