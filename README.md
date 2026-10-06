@@ -108,7 +108,7 @@ When adding the companion server to your AI desktop client (such as Claude Deskt
 ```
 *Tip*: Set `"READ_ONLY": "true"` to prevent the AI from making any edits or deletions.
 
-#### 2. Multi-Vault Configuration (Single Server with Vault Routing)
+#### 2. Multi-Vault Configuration with Per-Vault Permissions (Single Server)
 ```json
 {
   "mcpServers": {
@@ -116,15 +116,14 @@ When adding the companion server to your AI desktop client (such as Claude Deskt
       "command": "node",
       "args": ["/path/to/obsidian-mcp/dist/index.js"],
       "env": {
-        "OBSIDIAN_VAULTS": "work=/Users/username/Documents/WorkVault,personal=/Users/username/Documents/PersonalVault",
-        "OBSIDIAN_DEFAULT_VAULT": "work",
-        "READ_ONLY": "false"
+        "OBSIDIAN_VAULTS": "personal=/Users/username/Documents/PersonalVault:ro,work=/Users/username/Documents/WorkVault:rw",
+        "OBSIDIAN_DEFAULT_VAULT": "work"
       }
     }
   }
 }
 ```
-*How it works*: The AI discovers both vaults via `obsidian_list_vaults` and routes commands specifying `"vault": "personal"` to the personal vault, while falling back to `work` by default.
+*Tip*: Adding `:ro` to a vault path locks that vault as strictly read-only, preventing any note creation, edits, or deletes. Alternatively, use `"OBSIDIAN_READ_ONLY_VAULTS": "personal"`.
 
 #### 3. Multi-Vault with Separate Server Blocks (Independent Permissions)
 ```json
@@ -155,9 +154,10 @@ When adding the companion server to your AI desktop client (such as Claude Deskt
 | Variable | Importance & Function |
 | :--- | :--- |
 | `OBSIDIAN_VAULT_PATH` | Defines the isolated filesystem root for a single vault. All agent file operations are strictly sandboxed inside this path. |
-| `OBSIDIAN_VAULTS` | Defines multiple named vaults using `name=path,name2=path2`. Enables agent switching across multiple repositories. |
+| `OBSIDIAN_VAULTS` | Defines multiple named vaults using `name=path:ro,name2=path:rw`. Enables agent switching with per-vault permission enforcement. |
 | `OBSIDIAN_DEFAULT_VAULT` | Specifies the default target vault when an AI tool call omits an explicit `vault` argument. |
-| `READ_ONLY` | Safety toggle (`true`/`false`). When `true`, strips all write, delete, and command execution capabilities, guaranteeing no notes are modified. |
+| `OBSIDIAN_READ_ONLY_VAULTS` | Comma-separated list of vault names to lock as read-only (e.g. `personal,archive`). |
+| `READ_ONLY` | Global safety toggle (`true`/`false`). When `true`, locks all vaults as read-only. |
 | `AUTH_ENABLED` & `AUTH_TOKEN` | Cryptographic passkey validation preventing unauthorized processes from interacting with private vaults. |
 
 ---
