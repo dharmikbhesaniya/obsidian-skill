@@ -87,6 +87,79 @@ Modern AI agents often produce incomplete changes in Obsidian vaults because des
 > The [`obsidian-mcp`](skills/obsidian-mcp) skill is engineered exclusively for and works only with the official companion repository: **[dharmikbhesaniya/obsidian-mcp](https://github.com/dharmikbhesaniya/obsidian-mcp)**.
 > It requires the typed semantic tools, atomic path isolation guards, optimistic concurrency locking (`expectedRevision`), and multi-vault targeting implemented in that companion MCP server. Ensure that server is configured and running in your agent environment.
 
+### MCP Configuration: Single Vault vs. Multi-Vault
+
+When adding the companion server to your AI desktop client (such as Claude Desktop, Cursor, or Google Antigravity), use the following patterns:
+
+#### 1. Single Vault Configuration (Standard or Read-Only)
+```json
+{
+  "mcpServers": {
+    "obsidian": {
+      "command": "node",
+      "args": ["/path/to/obsidian-mcp/dist/index.js"],
+      "env": {
+        "OBSIDIAN_VAULT_PATH": "/Users/username/Documents/MyVault",
+        "READ_ONLY": "false"
+      }
+    }
+  }
+}
+```
+*Tip*: Set `"READ_ONLY": "true"` to prevent the AI from making any edits or deletions.
+
+#### 2. Multi-Vault Configuration (Single Server with Vault Routing)
+```json
+{
+  "mcpServers": {
+    "obsidian": {
+      "command": "node",
+      "args": ["/path/to/obsidian-mcp/dist/index.js"],
+      "env": {
+        "OBSIDIAN_VAULTS": "work=/Users/username/Documents/WorkVault,personal=/Users/username/Documents/PersonalVault",
+        "OBSIDIAN_DEFAULT_VAULT": "work",
+        "READ_ONLY": "false"
+      }
+    }
+  }
+}
+```
+*How it works*: The AI discovers both vaults via `obsidian_list_vaults` and routes commands specifying `"vault": "personal"` to the personal vault, while falling back to `work` by default.
+
+#### 3. Multi-Vault with Separate Server Blocks (Independent Permissions)
+```json
+{
+  "mcpServers": {
+    "obsidian_work": {
+      "command": "node",
+      "args": ["/path/to/obsidian-mcp/dist/index.js"],
+      "env": {
+        "OBSIDIAN_VAULT_PATH": "/Users/username/Documents/WorkVault",
+        "READ_ONLY": "false"
+      }
+    },
+    "obsidian_personal": {
+      "command": "node",
+      "args": ["/path/to/obsidian-mcp/dist/index.js"],
+      "env": {
+        "OBSIDIAN_VAULT_PATH": "/Users/username/Documents/PersonalVault",
+        "READ_ONLY": "true"
+      }
+    }
+  }
+}
+```
+
+### Essential Environment Variables
+
+| Variable | Importance & Function |
+| :--- | :--- |
+| `OBSIDIAN_VAULT_PATH` | Defines the isolated filesystem root for a single vault. All agent file operations are strictly sandboxed inside this path. |
+| `OBSIDIAN_VAULTS` | Defines multiple named vaults using `name=path,name2=path2`. Enables agent switching across multiple repositories. |
+| `OBSIDIAN_DEFAULT_VAULT` | Specifies the default target vault when an AI tool call omits an explicit `vault` argument. |
+| `READ_ONLY` | Safety toggle (`true`/`false`). When `true`, strips all write, delete, and command execution capabilities, guaranteeing no notes are modified. |
+| `AUTH_ENABLED` & `AUTH_TOKEN` | Cryptographic passkey validation preventing unauthorized processes from interacting with private vaults. |
+
 ---
 
 ## Reliability & Silent Failure Guardrails
